@@ -642,4 +642,49 @@ class Action
 			return 1;
 		}
 	}
+	function save_system()
+	{
+		extract($_POST);
+
+		// Validate and sanitize the input data
+		$name = $this->db->real_escape_string($name);
+		$short_name = $this->db->real_escape_string($short_name);
+		$about = $this->db->real_escape_string($content['about']);
+
+		// Check if the system settings already exist
+		$check = $this->db->query("SELECT * FROM system_settings")->num_rows;
+		if ($check > 0) {
+			// Update the existing system settings
+			$update = $this->db->query("UPDATE system_settings SET name='$name', short_form='$short_name', about='$about'");
+			if (!$update) {
+				return 2; // Error in updating system settings
+			}
+		} else {
+			// Insert new system settings
+			$insert = $this->db->query("INSERT INTO system_settings (name, short_form, about) VALUES ('$name', '$short_name', '$about')");
+			if (!$insert) {
+				return 2; // Error in inserting system settings
+			}
+		}
+
+		// Handle the file uploads for system logo and web cover
+		if (isset($_FILES['img'])) {
+			$avatar = $_FILES['img']['name'];
+			$tmp_name = $_FILES['img']['tmp_name'];
+			if (!empty($avatar)) {
+				$fname = strtotime(date('y-m-d H:i')) . '_' . $avatar;
+				$move = move_uploaded_file($tmp_name, 'assets/uploads/' . $fname);
+				if (!$move) {
+					return 3; // Error in uploading file
+				}
+				// Update the system settings with the new file name
+				$update = $this->db->query("UPDATE system_settings SET cover_img='$fname'");
+				if (!$update) {
+					return 2; // Error in updating system settings
+				}
+			}
+		}
+
+		return 1; // Success
+	}
 }

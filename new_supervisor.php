@@ -1,5 +1,3 @@
-<?php
-?>
 <div class="col-lg-12">
 	<div class="card">
 		<div class="card-body">
@@ -31,7 +29,7 @@
 
 						<div class="form-group">
 							<label for="" class="control-label">Date of Birth</label>
-							<input class="form-control form-control-sm" id="dob" name="DOB" type="Date" required value="<?php echo isset($DOB) ? $DOB : '' ?>">
+							<input class="form-control form-control-sm" id="dob" name="DOB" type="date" required value="<?php echo isset($DOB) ? $DOB : '' ?>">
 						</div>
 
 						<div class="form-group">
@@ -63,12 +61,12 @@
 								<?php endwhile; ?>
 							</select>
 						</div>
+					</div>
+					<div class="col-md-6">
 						<div class="form-group">
 							<label for="" class="control-label">Ministry</label>
 							<input class="form-control form-control-sm" id="ministry" name="ministry" type="text" required value="<?php echo isset($ministry) ? $ministry : '' ?>">
 						</div>
-					</div>
-					<div class="col-md-6">
 						<div class="form-group">
 							<label for="" class="control-label">Section</label>
 							<input class="form-control form-control-sm" id="section" name="section" type="text" required value="<?php echo isset($section) ? $section : '' ?>">
@@ -77,18 +75,19 @@
 							<label for="" class="control-label">Supervision Level ID</label>
 							<input class="form-control form-control-sm" id="sup_lv_id" name="sup_lv_id" type="number" required value="<?php echo isset($sup_lv_id) ? $sup_lv_id : '' ?>">
 						</div>
-						<div class="form-group">
+						<!--<div class="form-group">
 							<label for="" class="control-label">Supervisor</label>
 							<select name="supervisor_id" id="supervisor_id" class="form-control form-control-sm select2">
 								<option value=""></option>
 								<?php
-								$supervisors = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM supervisor_list order by concat(lastname,', ',firstname,' ',middlename) asc");
-								while ($row = $supervisors->fetch_assoc()) :
+								//$supervisors = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM supervisor_list order by concat(lastname,', ',firstname,' ',middlename) asc");
+								//while ($row = $supervisors->fetch_assoc()) :
 								?>
 									<option value="<?php echo $row['id'] ?>" <?php echo isset($supervisor_id) && $supervisor_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
-								<?php endwhile; ?>
+								<?php //endwhile; 
+								?>
 							</select>
-						</div>
+						</div>-->
 
 						<div class="form-group">
 							<label for="" class="control-label">Avatar</label>

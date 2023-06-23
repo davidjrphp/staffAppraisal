@@ -33,7 +33,7 @@
                 </div>
                 <div class="form-group">
                     <label for="" class="control-label">About HR(IWPAS)</label>
-                    <textarea name="content[about]" id="" cols="30" rows="2" class="form-control summernote"></textarea>
+                    <textarea name="content[about]" id="" cols="30" rows="2" class="form-control summernote"><?php echo  is_file('about.html') ? file_get_contents('about.html') : "" ?></textarea>
                 </div>
 
                 <div class="form-group">
@@ -46,26 +46,13 @@
                 <div class="form-group d-flex justify-content-center align-items-center">
                     <img src="<?php echo isset($avatar) ? 'assets/uploads/' . $avatar : '' ?>" alt="" id="cimg" class="img-fluid img-thumbnail ">
                 </div>
-                <div class="form-group">
-                    <label for="" class="control-label">Web Cover</label>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input rounded-circle" id="customFile2" name="img" onchange="displayImg(this,$(this))">
-                        <label class="custom-file-label" for="customFile2">Choose file</label>
-                    </div>
-                </div>
-                <div class="form-group d-flex justify-content-center align-items-center">
-                    <img src="<?php echo isset($avatar) ? 'assets/uploads/' . $avatar : '' ?>" alt="" id="cimg" class="img-fluid img-thumbnail ">
+                <hr>
+                <div class="col-lg-12 text-right justify-content-center d-flex">
+                    <button class="btn btn-primary mr-2" form="system-frm">Update</button>
+                    <button class="btn btn-secondary" type="button" onclick="location.href = 'index.php?page=employee_list'">Cancel</button>
                 </div>
             </form>
         </div>
-        <div class="card-footer">
-            <div class="col-md-12">
-                <div class="row">
-                    <button class="btn btn-sm btn-primary" form="system-frm">Update</button>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
 <script>
@@ -102,36 +89,28 @@
         _this.siblings('.custom-file-label').html(fnames.join(", "))
     }
 
-    function delete_img($path) {
-        start_loader()
-
+    $('#system-frm').submit(function(e) {
+        e.preventDefault()
+        start_load()
         $.ajax({
-            url: _base_url_ + 'classes/Master.php?f=delete_img',
-            data: {
-                path: $path
-            },
+            url: 'ajax.php?action=save_system',
+            data: new FormData($(this)[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
             method: 'POST',
-            dataType: "json",
-            error: err => {
-                console.log(err)
-                alert_toast("An error occured while deleting an Image", "error");
-                end_loader()
-            },
+            type: 'POST',
             success: function(resp) {
-                $('.modal').modal('hide')
-                if (typeof resp == 'object' && resp.status == 'success') {
-                    $('[data-path="' + $path + '"]').closest('.img-item').hide('slow', function() {
-                        $('[data-path="' + $path + '"]').closest('.img-item').remove()
-                    })
-                    alert_toast("Image Successfully Deleted", "success");
-                } else {
-                    console.log(resp)
-                    alert_toast("An error occured while deleting an Image", "error");
+                if (resp == 1) {
+                    alert_toast('Data successfully saved', "success");
+                    setTimeout(function() {
+                        location.replace('index.php?page=system_information')
+                    }, 1500)
                 }
-                end_loader()
             }
         })
-    }
+    })
+
     $(document).ready(function() {
         $('.rem_img').click(function() {
             _conf("Are sure to delete this image permanently?", 'delete_img', ["'" + $(this).attr('data-path') + "'"])

@@ -163,4 +163,14 @@ if ($action == 'delete_file') {
 	if ($delete)
 		echo $delete;
 }
+if ($action == 'save_system') {
+	$save = $crud->save_system();
+	if ($save)
+		echo $save;
+}
+if ($action == 'delete_system') {
+	$save = $crud->delete_system();
+	if ($save)
+		echo $save;
+}
 ob_end_flush();
