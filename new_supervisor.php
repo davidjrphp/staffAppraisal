@@ -3,7 +3,7 @@
 <div class="col-lg-12">
 	<div class="card">
 		<div class="card-body">
-			<form action="" id="manage_employee">
+			<form action="" id="manage_supervisor">
 				<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
 				<div class="row">
 					<div class="col-md-6 border-right">
@@ -31,7 +31,7 @@
 
 						<div class="form-group">
 							<label for="" class="control-label">Date of Birth</label>
-							<input class="form-control form-control-sm" id="dob" name="dob" type="Date" required value="<?php echo isset($dob) ? $dob : '' ?>">
+							<input class="form-control form-control-sm" id="dob" name="DOB" type="Date" required value="<?php echo isset($DOB) ? $DOB : '' ?>">
 						</div>
 
 						<div class="form-group">
@@ -89,6 +89,7 @@
 								<?php endwhile; ?>
 							</select>
 						</div>
+
 						<div class="form-group">
 							<label for="" class="control-label">Avatar</label>
 							<div class="custom-file">
@@ -99,6 +100,7 @@
 						<div class="form-group d-flex justify-content-center align-items-center">
 							<img src="<?php echo isset($avatar) ? 'assets/uploads/' . $avatar : '' ?>" alt="Avatar" id="cimg" class="img-fluid img-thumbnail ">
 						</div>
+
 						<div class="form-group">
 							<label class="control-label">Email</label>
 							<input type="email" class="form-control form-control-sm" name="email" required value="<?php echo isset($email) ? $email : '' ?>">
@@ -119,7 +121,7 @@
 				<hr>
 				<div class="col-lg-12 text-right justify-content-center d-flex">
 					<button class="btn btn-primary mr-2">Save</button>
-					<button class="btn btn-secondary" type="button" onclick="location.href = 'index.php?page=employee_list'">Cancel</button>
+					<button class="btn btn-secondary" type="button" onclick="location.href = 'index.php?page=supervisor_list'">Cancel</button>
 				</div>
 			</form>
 		</div>
@@ -158,7 +160,7 @@
 			reader.readAsDataURL(input.files[0]);
 		}
 	}
-	$('#manage_employee').submit(function(e) {
+	$('#manage_supervisor').submit(function(e) {
 		e.preventDefault()
 		$('input').removeClass("border-danger")
 		start_load()
@@ -173,7 +175,7 @@
 			}
 		}
 		$.ajax({
-			url: 'ajax.php?action=save_employee',
+			url: 'ajax.php?action=save_supervisor',
 			data: new FormData($(this)[0]),
 			cache: false,
 			contentType: false,
@@ -184,7 +186,7 @@
 				if (resp == 1) {
 					alert_toast('Data successfully saved.', "success");
 					setTimeout(function() {
-						location.replace('index.php?page=employee_list')
+						location.replace('index.php?page=supervisor_list')
 					}, 750)
 				} else if (resp == 2) {
 					$('#msg').html("<div class='alert alert-danger'>Email already exist.</div>");

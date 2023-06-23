@@ -1,4 +1,4 @@
-<?php include'db_connect.php' ?>
+<?php include 'db_connect.php' ?>
 <div class="col-lg-12">
 	<div class="card card-outline card-success">
 		<div class="card-header">
@@ -14,73 +14,76 @@
 						<th>Name</th>
 						<th>Email</th>
 						<th>Department</th>
-						<th>Designation</th>
+						<th>Job Title</th>
 						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php
 					$i = 1;
-					$designations = $conn->query("SELECT * FROM designation_list ");
-					$design_arr[0]= "Unset";
-					while($row=$designations->fetch_assoc()){
-						$design_arr[$row['id']] =$row['designation'];
+					$j_title = $conn->query("SELECT * FROM job_description ");
+					$design_arr[0] = "Unset";
+					while ($row = $j_title->fetch_assoc()) {
+						$design_arr[$row['id']] = $row['j_title'];
 					}
 					$departments = $conn->query("SELECT * FROM department_list ");
-					$dept_arr[0]= "Unset";
-					while($row=$departments->fetch_assoc()){
-						$dept_arr[$row['id']] =$row['department'];
+					$dept_arr[0] = "Unset";
+					while ($row = $departments->fetch_assoc()) {
+						$dept_arr[$row['id']] = $row['department'];
 					}
 					$qry = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM employee_list order by concat(lastname,', ',firstname,' ',middlename) asc");
-					while($row= $qry->fetch_assoc()):
+					while ($row = $qry->fetch_assoc()) :
 					?>
-					<tr>
-						<th class="text-center"><?php echo $i++ ?></th>
-						<td><b><?php echo ucwords($row['name']) ?></b></td>
-						<td><b><?php echo $row['email'] ?></b></td>
-						<td><b><?php echo isset($dept_arr[$row['department_id']]) ? $dept_arr[$row['department_id']] : 'Unknow Department' ?></b></td>
-						<td><b><?php echo isset($design_arr[$row['designation_id']]) ? $design_arr[$row['designation_id']] : 'Unknow Designation' ?></b></td>
-						<td class="text-center">
-							<button type="button" class="btn btn-default btn-sm btn-flat border-info wave-effect text-info dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-		                      Action
-		                    </button>
-		                    <div class="dropdown-menu" style="">
-		                      <a class="dropdown-item view_employee" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">View</a>
-		                      <div class="dropdown-divider"></div>
-		                      <a class="dropdown-item" href="./index.php?page=edit_employee&id=<?php echo $row['id'] ?>">Edit</a>
-		                      <div class="dropdown-divider"></div>
-		                      <a class="dropdown-item delete_employee" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">Delete</a>
-		                    </div>
-						</td>
-					</tr>	
-				<?php endwhile; ?>
+						<tr>
+							<th class="text-center"><?php echo $i++ ?></th>
+							<td><b><?php echo ucwords($row['name']) ?></b></td>
+							<td><b><?php echo $row['email'] ?></b></td>
+							<td><b><?php echo isset($dept_arr[$row['department_id']]) ? $dept_arr[$row['department_id']] : 'Unknow Department' ?></b></td>
+							<td><b><?php echo isset($design_arr[$row['j_title_id']]) ? $design_arr[$row['j_title_id']] : 'Unknow Job Title' ?></b></td>
+							<td class="text-center">
+								<button type="button" class="btn btn-default btn-sm btn-flat border-info wave-effect text-info dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+									Action
+								</button>
+								<div class="dropdown-menu" style="">
+									<a class="dropdown-item view_employee" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">View</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="./index.php?page=edit_employee&id=<?php echo $row['id'] ?>">Edit</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item delete_employee" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">Delete</a>
+								</div>
+							</td>
+						</tr>
+					<?php endwhile; ?>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
 <script>
-	$(document).ready(function(){
+	$(document).ready(function() {
 		$('#list').dataTable()
-	$('.view_employee').click(function(){
-		uni_modal("<i class='fa fa-id-card'></i> Employee Details","view_employee.php?id="+$(this).attr('data-id'))
+		$('.view_employee').click(function() {
+			uni_modal("<i class='fa fa-id-card'></i> Employee Details", "view_employee.php?id=" + $(this).attr('data-id'))
+		})
+		$('.delete_employee').click(function() {
+			_conf("Are you sure to delete this Employee?", "delete_employee", [$(this).attr('data-id')])
+		})
 	})
-	$('.delete_employee').click(function(){
-	_conf("Are you sure to delete this Employee?","delete_employee",[$(this).attr('data-id')])
-	})
-	})
-	function delete_employee($id){
+
+	function delete_employee($id) {
 		start_load()
 		$.ajax({
-			url:'ajax.php?action=delete_employee',
-			method:'POST',
-			data:{id:$id},
-			success:function(resp){
-				if(resp==1){
-					alert_toast("Data successfully deleted",'success')
-					setTimeout(function(){
+			url: 'ajax.php?action=delete_employee',
+			method: 'POST',
+			data: {
+				id: $id
+			},
+			success: function(resp) {
+				if (resp == 1) {
+					alert_toast("Data successfully deleted", 'success')
+					setTimeout(function() {
 						location.reload()
-					},1500)
+					}, 1500)
 
 				}
 			}

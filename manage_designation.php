@@ -1,8 +1,8 @@
 <?php
 include 'db_connect.php';
-if(isset($_GET['id'])){
-	$qry = $conn->query("SELECT * FROM designation_list where id={$_GET['id']}")->fetch_array();
-	foreach($qry as $k => $v){
+if (isset($_GET['id'])) {
+	$qry = $conn->query("SELECT * FROM job_description where id={$_GET['id']}")->fetch_array();
+	foreach ($qry as $k => $v) {
 		$$k = $v;
 	}
 }
@@ -12,38 +12,37 @@ if(isset($_GET['id'])){
 		<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
 		<div id="msg" class="form-group"></div>
 		<div class="form-group">
-			<label for="designation" class="control-label">Designation</label>
-			<input type="text" class="form-control form-control-sm" name="designation" id="designation" value="<?php echo isset($designation) ? $designation : '' ?>">
+			<label for="j_title" class="control-label">Job Title</label>
+			<input type="text" class="form-control form-control-sm" name="j_title" id="j_title" value="<?php echo isset($j_title) ? $j_title : '' ?>">
 		</div>
 		<div class="form-group">
-			<label for="description" class="control-label">Description</label>
-			<textarea name="description" id="description" cols="30" rows="4" class="form-control"><?php echo isset($description) ? $description : '' ?></textarea>
+			<label for="description" class="control-label">Job Purpose</label>
+			<textarea name="j_purpose" id="j_purpose" cols="30" rows="4" class="form-control"><?php echo isset($j_purpose) ? $j_purpose : '' ?></textarea>
 		</div>
 	</form>
 </div>
 <script>
-	$(document).ready(function(){
-		$('#manage-designation').submit(function(e){
+	$(document).ready(function() {
+		$('#manage-designation').submit(function(e) {
 			e.preventDefault();
 			start_load()
 			$('#msg').html('')
 			$.ajax({
-				url:'ajax.php?action=save_designation',
-				method:'POST',
-				data:$(this).serialize(),
-				success:function(resp){
-					if(resp == 1){
-						alert_toast("Data successfully saved.","success");
-						setTimeout(function(){
-							location.reload()	
-						},1750)
-					}else if(resp == 2){
-						$('#msg').html('<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> designation already exist.</div>')
+				url: 'ajax.php?action=save_designation',
+				method: 'POST',
+				data: $(this).serialize(),
+				success: function(resp) {
+					if (resp == 1) {
+						alert_toast("Data successfully saved.", "success");
+						setTimeout(function() {
+							location.reload()
+						}, 1750)
+					} else if (resp == 2) {
+						$('#msg').html('<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> Job Title already exist.</div>')
 						end_load()
 					}
 				}
 			})
 		})
 	})
-
 </script>
