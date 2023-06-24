@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 23, 2023 at 03:01 PM
+-- Generation Time: Jun 23, 2023 at 08:45 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -112,7 +112,8 @@ CREATE TABLE `employee_list` (
 INSERT INTO `employee_list` (`id`, `employee_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `sex`, `dob`, `station`, `sup_lv_id`, `department_id`, `j_title_id`, `supervisor_id`, `ministry`, `section`, `avatar`, `date_created`) VALUES
 (3, '', 'Sandra', 'Kabuswe', 'Moyo', 'sandramoyo@gmail.com', '3fc5586bed4fb9f745500c0605197924', '', '0000-00-00', '', 0, 3, 3, 2, '', '', 'no-image-available.png', '2023-05-31 14:42:59'),
 (7, '', 'Albertina', '', 'Mwale', 'albertinamwale@gmail.com', '94133c84e5bff4e882e0914f3665a6b0', '', '0000-00-00', '', 0, 2, 6, 5, '', '', 'no-image-available.png', '2023-06-07 01:05:22'),
-(10, '', 'Judith', '', 'Mutale', 'judithmutale@gmail.com', 'f481aa3206ba8cb86cd50fe9d005a9b6', 'FEMALE', '0000-00-00', 'Chawama General Hospital', 0, 2, 6, 5, '', '', 'no-image-available.png', '2023-06-20 17:54:35');
+(10, '', 'Judith', '', 'Mutale', 'judithmutale@gmail.com', 'f481aa3206ba8cb86cd50fe9d005a9b6', 'FEMALE', '0000-00-00', 'Chawama General Hospital', 0, 2, 6, 5, '', '', 'no-image-available.png', '2023-06-20 17:54:35'),
+(11, '', 'Margaret', 'Theresa', 'Njobvu', 'margaretnjobvu@gmail.com', '13dbe593780d21288a8c0b8a62386f65', 'FEMALE', '1998-12-07', 'Matero General Hospital', 1, 1, 5, 5, 'Health', 'ART', 'no-image-available.png', '2023-06-23 18:35:05');
 
 -- --------------------------------------------------------
 
@@ -209,7 +210,8 @@ CREATE TABLE `supervisor_list` (
 
 INSERT INTO `supervisor_list` (`id`, `employee_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `sex`, `DOB`, `station`, `sup_lv_id`, `department_id`, `j_title_id`, `ministry`, `section`, `avatar`, `date_created`) VALUES
 (2, '', 'Maurice', '', 'Manzi', 'mauricemanzi@yahoo.com', '89c2aea4392de83c2694ff08b10fce05', '', NULL, '', 0, 0, 0, '', '', '1685565660_1607134440_avatar.jpg', '2023-05-31 14:41:21'),
-(5, '', 'David', '', 'Mwelwa', 'davidgarciajr955@gmail.com', '55fc5b709962876903785fd64a6961e5', '', NULL, '', 0, 0, 0, '', '', '1686121140_1607134320_avatar.jpg', '2023-06-07 00:59:32');
+(5, '', 'David', '', 'Mwelwa', 'davidgarciajr955@gmail.com', '55fc5b709962876903785fd64a6961e5', '', NULL, '', 0, 0, 0, '', '', '1686121140_1607134320_avatar.jpg', '2023-06-07 00:59:32'),
+(6, '', 'Catherine', '', 'Chitongo', 'catherinechitongo@gmail.com', '78c37baa5d6b1de1cccb1e356ac41034', 'FEMALE', '1972-06-14', 'Chawama General Hospital', 3, 5, 2, 'Health', 'Administration', 'no-image-available.png', '2023-06-23 18:36:33');
 
 -- --------------------------------------------------------
 
@@ -260,7 +262,7 @@ CREATE TABLE `system_settings` (
 --
 
 INSERT INTO `system_settings` (`id`, `name`, `short_form`, `email`, `contact`, `address`, `about`, `cover_img`) VALUES
-(1, 'HR Individual Work Plan & Appraisal System', 'HR(IWPAS)', 'info@lpho.com', '+260 972862797', 'Lusaka Provincial Health Office, Zambia', '', '');
+(1, 'HR Individual Work Plan & Appraisal System', 'HR(IWPAS)', 'info@lpho.com', '+260 972862797', 'Lusaka Provincial Health Office, Zambia', '<h1 style=\"margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-family: DauphinPlain; line-height: 90px; color: rgb(255, 255, 255); font-size: 70px; padding: 0px; text-align: center;\">ABOUT ESAMS</h1><h4 style=\"margin: 10px 10px 5px; font-family: &quot;Open Sans&quot;, Arial, sans-serif; line-height: 18px; color: rgb(255, 255, 255); font-size: 14px; padding: 0px; text-align: center; font-style: italic;\">\"For the Love of the Echo Sound\"</h4><h5 style=\"margin: 5px 10px 20px; font-family: &quot;Open Sans&quot;, Arial, sans-serif; line-height: 14px; color: rgb(255, 255, 255); font-size: 12px; padding: 0px; text-align: center;\">\"\"</h5><div id=\"Content\" style=\"margin: 0px; padding: 0px; position: relative; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; text-align: center; background-color: rgb(255, 255, 255);\"><div class=\"boxed\" style=\"margin: 10px 28.7969px; padding: 0px; clear: both;\"><div id=\"lipsum\" style=\"margin: 0px; padding: 0px; text-align: justify;\"></div></div></div><hr style=\"height: 1px; margin: 0px; border-top: 0px; padding: 0px; clear: both; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0)); color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; text-align: center; background-color: rgb(255, 255, 255);\"><p style=\"text-align: center;\"><span style=\"text-align: justify;\">The HR Individual Work Plan & Appraisal system was developed by the Lusaka Provincial Health Office (LPHO) with the goal to digitize Human Resource Appraisal system. The HR(IWPAS) is an electronic system that electronically performs the evaluation of health staff performance taking into account the rating, on both the targets and performance competencies </span></p>', '1687538940_logo3.jpg');
 
 -- --------------------------------------------------------
 
@@ -482,7 +484,7 @@ ALTER TABLE `document_list`
 -- AUTO_INCREMENT for table `employee_list`
 --
 ALTER TABLE `employee_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `job_description`
@@ -506,7 +508,7 @@ ALTER TABLE `ratings`
 -- AUTO_INCREMENT for table `supervisor_list`
 --
 ALTER TABLE `supervisor_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `system_info`

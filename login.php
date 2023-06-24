@@ -28,9 +28,12 @@ if (isset($_SESSION['login_id']))
 </style>
 
 <body class="hold-transition login-page bg-black">
+  <div class="system-logo bg-gradient-navy">
+    <img src="assets/uploads/logo3.jpg" alt="System Logo" class="brand-image img-square elevation-3" style="opacity: .8;width: 5.5rem;height: 5.5rem;max-height: unset">
+  </div>
   <h3><b>Welcome to<b></h3><br>
-  <h6 class="page-title" style="text-align: center"><?php echo $_SESSION['system']['name'] ?> &nbsp; <i style="color: green">v1.0</i></h6>
-  <h6 class="short-form" style="text-align: center"><?php echo $_SESSION['system']['short_form'] ?></h6><br><br>
+  <h6 class=" page-title" style="text-align: center"><?php echo $_SESSION['system']['name'] ?> &nbsp; <i style="color: green">v1.0</i></h6>
+  <h6 class="short-form" style="text-align: center"><?php echo $_SESSION['system']['short_form'] ?></h6><br>
   <div class="login-box">
     <div class="login-logo">
       <a href="#" class="text-white"></a>
