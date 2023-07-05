@@ -25,11 +25,16 @@ if (isset($_SESSION['login_id']))
     font-size: 1.0em;
     color: #fff4f4 !important;
   }
+
+  .login-card-body {
+    border-radius: 100px;
+    padding: 25px;
+  }
 </style>
 
-<body class="hold-transition login-page bg-black">
-  <div class="system-logo bg-gradient-navy">
-    <img src="assets/uploads/logo3.jpg" alt="System Logo" class="brand-image img-square elevation-3" style="opacity: .8;width: 5.5rem;height: 5.5rem;max-height: unset">
+<body class="hold-transition login-page bg-lightblue">
+  <div class="system-logo bg-lightblue">
+    <img src="assets/uploads/zambia.png" alt="System Logo" class="brand-image img-square elevation-3" style="opacity: .8;width: 5.5rem;height: 5.5rem;max-height: unset; ">
   </div>
   <h3><b>Welcome to<b></h3><br>
   <h6 class=" page-title" style="text-align: center"><?php echo $_SESSION['system']['name'] ?> &nbsp; <i style="color: green">v1.0</i></h6>
@@ -41,6 +46,7 @@ if (isset($_SESSION['login_id']))
     <!-- /.login-logo -->
     <div class="card">
       <div class="card-body login-card-body">
+        <h5 class="login-tag" style="text-align: center">Enter Login Credentials</h5>
         <form action="" id="login-form">
           <div class="input-group mb-3">
             <input type="email" class="form-control" name="email" required placeholder="Email">
@@ -63,7 +69,7 @@ if (isset($_SESSION['login_id']))
             <select name="login" id="" class="custom-select custom-select-sm">
               <option value="0">Staff</option>
               <option value="1">Supervisor</option>
-              <option value="2">Admin</option>
+              <option value="2">HR/Admin</option>
             </select>
           </div>
           <div class="row">
@@ -86,7 +92,7 @@ if (isset($_SESSION['login_id']))
       <!-- /.login-card-body -->
     </div>
   </div><br><br>
-  <h6 style="text-align: center"> Lusaka Provincial Health Office <br> LPHO </h6>
+  <center><small> Lusaka Provincial Health Office <br> LPHO </small></center>
   <!-- /.login-box -->
   <script>
     $(document).ready(function() {

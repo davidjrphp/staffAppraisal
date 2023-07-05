@@ -1,10 +1,12 @@
-<?php include'db_connect.php' ?>
+<?php include 'db_connect.php' ?>
 <div class="col-lg-12">
 	<div class="card card-outline card-primary">
 		<div class="card-header">
-			<div class="card-tools">
-				<a class="btn btn-block btn-sm btn-default btn-flat border-primary new_department" href="javascript:void(0)"><i class="fa fa-plus"></i> Add New</a>
-			</div>
+			<?php if ($_SESSION['login_type'] == 2) : ?>
+				<div class="card-tools">
+					<a class="btn btn-block btn-sm btn-default btn-flat border-primary new_department" href="javascript:void(0)"><i class="fa fa-plus"></i> Add New</a>
+				</div>
+			<?php endif; ?>
 		</div>
 		<div class="card-body">
 			<table class="table tabe-hover table-bordered" id="list">
@@ -26,54 +28,59 @@
 					<?php
 					$i = 1;
 					$qry = $conn->query("SELECT * FROM department_list order by department asc ");
-					while($row= $qry->fetch_assoc()):
+					while ($row = $qry->fetch_assoc()) :
 					?>
-					<tr>
-						<th class="text-center"><?php echo $i++ ?></th>
-						<td><b><?php echo $row['department'] ?></b></td>
-						<td><b><?php echo $row['description'] ?></b></td>
-						<td class="text-center">
-		                    <div class="btn-group">
-		                        <a href="javascript:void(0)" data-id='<?php echo $row['id'] ?>' class="btn btn-primary btn-flat manage_department">
-		                          <i class="fas fa-edit"></i>
-		                        </a>
-		                        <button type="button" class="btn btn-danger btn-flat delete_department" data-id="<?php echo $row['id'] ?>">
-		                          <i class="fas fa-trash"></i>
-		                        </button>
-	                      </div>
-						</td>
-					</tr>	
-				<?php endwhile; ?>
+						<tr>
+							<th class="text-center"><?php echo $i++ ?></th>
+							<td><b><?php echo $row['department'] ?></b></td>
+							<td><b><?php echo $row['description'] ?></b></td>
+							<td class="text-center">
+								<?php if ($_SESSION['login_type'] == 2) : ?>
+									<div class="btn-group">
+										<a href="javascript:void(0)" data-id='<?php echo $row['id'] ?>' class="btn btn-primary btn-flat manage_department">
+											<i class="fas fa-edit"></i>
+										</a>
+										<button type="button" class="btn btn-danger btn-flat delete_department" data-id="<?php echo $row['id'] ?>">
+											<i class="fas fa-trash"></i>
+										</button>
+									</div>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endwhile; ?>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
 <script>
-	$(document).ready(function(){
+	$(document).ready(function() {
 		$('#list').dataTable()
-		$('.new_department').click(function(){
-			uni_modal("New Department","manage_department.php")
+		$('.new_department').click(function() {
+			uni_modal("New Department", "manage_department.php")
 		})
-		$('.manage_department').click(function(){
-			uni_modal("Manage Department","manage_department.php?id="+$(this).attr('data-id'))
+		$('.manage_department').click(function() {
+			uni_modal("Manage Department", "manage_department.php?id=" + $(this).attr('data-id'))
 		})
-	$('.delete_department').click(function(){
-	_conf("Are you sure to delete this Department?","delete_department",[$(this).attr('data-id')])
+		$('.delete_department').click(function() {
+			_conf("Are you sure to delete this Department?", "delete_department", [$(this).attr('data-id')])
+		})
 	})
-	})
-	function delete_department($id){
+
+	function delete_department($id) {
 		start_load()
 		$.ajax({
-			url:'ajax.php?action=delete_department',
-			method:'POST',
-			data:{id:$id},
-			success:function(resp){
-				if(resp==1){
-					alert_toast("Data successfully deleted",'success')
-					setTimeout(function(){
+			url: 'ajax.php?action=delete_department',
+			method: 'POST',
+			data: {
+				id: $id
+			},
+			success: function(resp) {
+				if (resp == 1) {
+					alert_toast("Data successfully deleted", 'success')
+					setTimeout(function() {
 						location.reload()
-					},1500)
+					}, 1500)
 
 				}
 			}

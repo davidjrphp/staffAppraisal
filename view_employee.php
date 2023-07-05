@@ -5,7 +5,7 @@ if (isset($_GET['id'])) {
   foreach ($qry as $k => $v) {
     $$k = $v;
   }
-  $j_title = $conn->query("SELECT * FROM job_description where id = $j_title_id ");
+  $j_title = $conn->query("SELECT * FROM job_description where job_id = $j_title_id ");
   $j_title = $j_title->num_rows > 0 ? $j_title->fetch_array()['j_title'] : 'Unknown Job Description';
   $department = $conn->query("SELECT * FROM department_list where id = $department_id ");
   $department = $department->num_rows > 0 ? $department->fetch_array()['department'] : 'Unknown Department';

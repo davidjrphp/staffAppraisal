@@ -32,7 +32,7 @@
                     <input type="text" class="form-control form-control-sm" name="short_name" id="short_name" value="<?php echo $_SESSION['system']['short_form'] ?>">
                 </div>
                 <div class="form-group">
-                    <label for="" class="control-label">About HR(IWPAS)</label>
+                    <label for="" class="control-label">About HR(APAS)</label>
                     <textarea name="content[about]" id="" cols="30" rows="2" class="form-control summernote"><?php echo  is_file('about.html') ? file_get_contents('about.html') : "" ?></textarea>
                 </div>
 

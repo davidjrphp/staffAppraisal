@@ -1,17 +1,60 @@
 <?php include 'db_connect.php' ?>
+<?php
+$j_title_id = 0;
+$j_purpose = 0;
+$department_id = 0;
+
+if (isset($_SESSION['login_id'])) {
+    $qry = $conn->query("SELECT e.*, concat(e.lastname, ', ', e.firstname, ' ', e.middlename) as name, s.lastname, s.firstname
+                                    FROM employee_list e
+                                    LEFT JOIN supervisor_list s ON e.supervisor_id = s.id
+                                    WHERE e.id = " . $_SESSION['login_id'])->fetch_array();
+    if ($qry) {
+        foreach ($qry as $k => $v) {
+            $$k = $v;
+        }
+    }
+
+    $j_title = $conn->query("SELECT * FROM job_description where job_id = $j_title_id ");
+    $j_title = $j_title->num_rows > 0 ? $j_title->fetch_array()['j_title'] : 'Unknown Job Title';
+    $j_purpose = $conn->query("SELECT * FROM job_description where job_id = $j_purpose ");
+    $j_purpose = $j_purpose->num_rows > 0 ? $j_purpose->fetch_array()['j_purpose'] : 'Unknown Job Purpose';
+    $department = $conn->query("SELECT * FROM department_list where id = $department_id ");
+    $department = $department->num_rows > 0 ? $department->fetch_array()['department'] : 'Unknown Department';
+}
+?>
 <div class="col-lg-12">
     <div class="card card-outline card-success">
         <div class="card-header">
-            <?php if ($_SESSION['login_type'] == 2) : ?>
-                <div class="card-tools">
-                    <a class="btn btn-block btn-sm btn-default btn-flat border-primary" href="./index.php?page=new_work_plan"><i class="fa fa-plus"></i> Add New Work Plan</a>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <h6><b>Name of Job Holder:</b></h6>
+                    <p><?php echo ucwords($_SESSION['login_name']) ?></p>
                 </div>
-            <?php endif; ?>
-            <?php if ($_SESSION['login_type'] == 1) : ?>
-                <div class="card-tools">
-                    <button class="btn btn-block btn-sm btn-default btn-flat border-primary" id="new_work_plan"><i class="fa fa-plus"></i> Add Work Plan</button>
+                <div class="col-md-6">
+                    <h6><b>Work Plan Period:</b></h6>
+                    <p></p>
                 </div>
-            <?php endif; ?>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <h6><b>Job Title:</b></h6>
+                    <p><?php echo $j_title ?></p>
+                </div>
+                <div class="col-md-6">
+                    <h6><b>Department/Section:</b></h6>
+                    <p><?php echo $department ?></p>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <h6><b>Job Purpose:</b></h6>
+                    <p><?php echo $j_purpose ?> </p>
+                </div>
+            </div>
+            <div class="card-tools">
+                <a class="btn btn-block btn-sm btn-default btn-flat border-primary" href="./index.php?page=new_work_plan"><i class="fa fa-plus"></i> Add New Work Plan</a>
+            </div>
         </div>
         <div class="card-body">
             <table class="table tabe-hover table-condensed" id="list">
@@ -36,7 +79,7 @@
                     elseif ($_SESSION['login_type'] == 1)
                         $where = " where e.supervisor_id = {$_SESSION['login_id']} ";
 
-
+                    //$qry = $conn->query("SELECT * FROM work_plan WHERE employee_id = '{$_SESSION[' login_id']}' OR supervisor_id = '{$_SESSION[' login_id']}'");
                     $qry = $conn->query("SELECT w.*,concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM work_plan w inner join employee_list e on e.id = w.employee_id $where order by unix_timestamp(w.date_created) asc");
                     while ($row = $qry->fetch_assoc()) :
                         $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
@@ -45,29 +88,25 @@
                         $kra = str_replace(array("<li>", "</li>"), array("", ", "), $kra);
                         $targets = strtr(html_entity_decode($row['targets']), $trans);
                         $targets = str_replace(array("<li>", "</li>"), array("", ", "), $targets);
-                        $p_acc = strtr(html_entity_decode($row['p_accountabilty']), $trans);
+                        $p_acc = strtr(html_entity_decode($row['p_accountability']), $trans);
                         $p_acc = str_replace(array("<li>", "</li>"), array("", ", "), $p_acc);
                         $schedule = strtr(html_entity_decode($row['activ_schedule']), $trans);
-                        $schedule = str_replace(array("<li>", "</li>"), array("", ", "), $activ_schedule);
+                        $schedule = str_replace(array("<li>", "</li>"), array("", ", "), $schedule);
 
                     ?>
                         <tr>
                             <td class="text-center"><?php echo $i++ ?></td>
                             <td>
-                                <p><b><?php echo ucwords($row['kra_name']) ?></b></p>
-                                <p class="truncate"><?php echo strip_tags($kra) ?></p>
+                                <p class="truncate"><b><?php echo strip_tags($kra) ?></b></p>
                             </td>
                             <td>
-                                <p><b><?php echo ucwords($row['targets']) ?></b></p>
                                 <p class="truncate"><?php echo strip_tags($targets) ?></p>
                             </td>
                             <td>
-                                <p><b><?php echo ucwords($row['p_accountability']) ?></b></p>
                                 <p class="truncate"><?php echo strip_tags($p_acc) ?></p>
                             </td>
                             <td>
-                                <p><b><?php echo ucwords($row['activ_schedule']) ?></b></p>
-                                <p class="truncate"><?php echo strip_tags($activ_schedule) ?></p>
+                                <p class="truncate"><?php echo strip_tags($schedule) ?></p>
                             </td>
                             <td>
                                 <?php
@@ -78,7 +117,7 @@
                                 } elseif ($row['status'] == 2) {
                                     echo "<span class='badge badge-success'>Complete</span>";
                                 }
-                                if (strtotime($row['due_date']) < strtotime(date('Y-m-d'))) {
+                                if (strtotime($row['end_date']) < strtotime(date('Y-m-d'))) {
                                     echo "<span class='badge badge-danger mx-1'>Over Due</span>";
                                 }
                                 ?>

@@ -1,15 +1,42 @@
 <div class="col-lg-12">
     <div class="card">
         <div class="card-body">
-            <form action="" id="new_work_plan">
-                <input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
+            <form action="save_work_plan.php" id="new_work_plan" method="POST">
+                <!--<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">-->
                 <div class="row">
                     <div class="col-md-6 border-right">
+                        <?php if ($_SESSION['login_type'] == 0) : ?>
+                            <div class="form-group">
+                                <label for="">Enter You Name</label>
+                                <select name="employee_id" id="employee_id" class="form-control form-control-sm" required="">
+                                    <option value=""></option>
+                                    <?php
+                                    $employees = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM employee_list order by concat(lastname,', ',firstname,' ',middlename) asc");
+                                    while ($row = $employees->fetch_assoc()) :
+                                    ?>
+                                        <option value="<?php echo $row['id'] ?>" <?php echo isset($employee_id) && $employee_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($_SESSION['login_type'] != 0) : ?>
+                            <div class="form-group">
+                                <label for="">Enter You Name</label>
+                                <select name="supervisor_id" id="supervisor_id" class="form-control form-control-sm" required="">
+                                    <option value=""></option>
+                                    <?php
+                                    $supervisors = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM supervisor_list order by concat(lastname,', ',firstname,' ',middlename) asc");
+                                    while ($row = $supervisors->fetch_assoc()) :
+                                    ?>
+                                        <option value="<?php echo $row['id'] ?>" <?php echo isset($supervisor_id) && $supervisor_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+                        <?php endif; ?>
                         <div class="form-group">
                             <label for="">start Date</label>
                             <input type="date" class="form-control form-control-sm" name="start_date" value="<?php echo isset($start_date) ? $start_date : date("Y-m-d") ?>" required>
                         </div>
-
                         <div class="form-group">
                             <label for="" class="control-label">End Date</label>
                             <input class="form-control form-control-sm" name="end_date" type="date" required value="<?php echo isset($end_date) ? $end_date : '' ?>">
@@ -54,11 +81,11 @@
 
 <script>
     $(document).ready(function() {
-
-        $('#employee_id').select2({
-            placeholder: 'Please Employee',
+        // Initialize select2 and summernote plugins
+        $('#j_title_id').select2({
+            placeholder: 'Please select a Job Title',
             width: '100%'
-        })
+        });
 
         $('.summernote').summernote({
             height: 200,
@@ -72,29 +99,6 @@
                 ['table', ['table']],
                 ['view', ['undo', 'redo', 'fullscreen', 'codeview', 'help']]
             ]
-        })
-    })
-
-
-    $('#new_work_plan').submit(function(e) {
-        e.preventDefault()
-        start_load()
-        $.ajax({
-            url: 'ajax.php?action=save_work_plan',
-            data: new FormData($(this)[0]),
-            cache: false,
-            contentType: false,
-            processData: false,
-            method: 'POST',
-            type: 'POST',
-            success: function(resp) {
-                if (resp == 1) {
-                    alert_toast('Data successfully saved', "success");
-                    setTimeout(function() {
-                        location.replace('index.php?page=work_plan_list')
-                    }, 1500)
-                }
-            }
-        })
-    })
+        });
+    });
 </script>

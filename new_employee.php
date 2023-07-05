@@ -59,7 +59,7 @@
 								$j_titles = $conn->query("SELECT * FROM job_description order by j_title asc");
 								while ($row = $j_titles->fetch_assoc()) :
 								?>
-									<option value="<?php echo $row['id'] ?>" <?php echo isset($j_title_id) && $j_title_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['j_title'] ?></option>
+									<option value="<?php echo $row['job_id'] ?>" <?php echo isset($j_title_id) && $j_title_id == $row['job_id'] ? 'selected' : '' ?>><?php echo $row['j_title'] ?></option>
 								<?php endwhile; ?>
 							</select>
 						</div>
@@ -72,6 +72,10 @@
 						<div class="form-group">
 							<label for="" class="control-label">Section</label>
 							<input class="form-control form-control-sm" id="section" name="section" type="text" required value="<?php echo isset($section) ? $section : '' ?>">
+						</div>
+						<div class="form-group">
+							<label for="" class="control-label">STAFF NO:</label>
+							<input class="form-control form-control-sm" id="staff_no" name="staff_no" type="text" required value="<?php echo isset($staff_no) ? $staff_no : '' ?>">
 						</div>
 						<div class="form-group">
 							<label for="" class="control-label">Supervision Level ID</label>
@@ -172,6 +176,7 @@
 				}
 			}
 		}
+		start_load()
 		$.ajax({
 			url: 'ajax.php?action=save_employee',
 			data: new FormData($(this)[0]),

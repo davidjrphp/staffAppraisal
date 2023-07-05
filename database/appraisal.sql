@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 23, 2023 at 08:45 PM
+-- Generation Time: Jul 02, 2023 at 11:58 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -24,16 +24,55 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `apas`
+-- Table structure for table `apas_rating`
 --
 
-CREATE TABLE `apas` (
+CREATE TABLE `apas_rating` (
   `apas_id` int(30) NOT NULL,
-  `cop` text NOT NULL,
-  `emp_id` int(30) NOT NULL,
-  `j_id` int(30) NOT NULL,
-  `kra_name` varchar(200) NOT NULL,
-  `score` int(30) NOT NULL
+  `target_id` int(30) NOT NULL,
+  `scores` int(10) NOT NULL,
+  `overall_score` int(10) NOT NULL,
+  `employee_id` int(30) NOT NULL,
+  `supervisor_id` int(30) NOT NULL,
+  `date_created` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `apas_rating`
+--
+
+INSERT INTO `apas_rating` (`apas_id`, `target_id`, `scores`, `overall_score`, `employee_id`, `supervisor_id`, `date_created`) VALUES
+(1, 0, 2, 2, 0, 0, '2023-07-01 10:56:29'),
+(2, 0, 2, 0, 0, 0, '2023-07-01 10:56:29'),
+(3, 0, 2, 2, 0, 0, '2023-07-01 10:57:31'),
+(4, 0, 2, 0, 0, 0, '2023-07-01 10:57:31'),
+(5, 0, 2, 2, 0, 0, '2023-07-01 10:58:25'),
+(6, 0, 2, 0, 0, 0, '2023-07-01 10:58:25'),
+(7, 0, 2, 2, 0, 0, '2023-07-01 10:58:33'),
+(8, 0, 2, 0, 0, 0, '2023-07-01 10:58:33');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `appraisal_comments`
+--
+
+CREATE TABLE `appraisal_comments` (
+  `id` int(11) NOT NULL,
+  `employee_id` int(30) NOT NULL,
+  `supervisor_id` int(30) NOT NULL,
+  `app_comment` text NOT NULL,
+  `co_off_name` varchar(50) NOT NULL,
+  `agree` varchar(20) NOT NULL,
+  `disagree` varchar(20) NOT NULL,
+  `comment` text NOT NULL,
+  `ps_name` varchar(50) NOT NULL,
+  `agree_1` varchar(20) NOT NULL,
+  `disagree_1` varchar(20) NOT NULL,
+  `comment_1` text NOT NULL,
+  `date_1` datetime NOT NULL DEFAULT current_timestamp(),
+  `date_2` datetime NOT NULL DEFAULT current_timestamp(),
+  `date_3` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -54,7 +93,13 @@ CREATE TABLE `department_list` (
 
 INSERT INTO `department_list` (`id`, `department`, `description`) VALUES
 (1, 'IT Department', 'Information Technology Department'),
-(5, 'Planning & Information', 'Electronic system management');
+(5, 'Planning & Information', 'Electronic system management'),
+(6, 'ART ', 'HIV/TB management'),
+(7, 'OPD', 'Out Patient Department'),
+(8, 'MCH', 'Mother to Child Health management'),
+(9, 'M&E', 'Monitoring and Evaluation of Health information'),
+(10, 'Administration', 'facility management and Human resource'),
+(11, 'Dentology', 'Dental technology management');
 
 -- --------------------------------------------------------
 
@@ -101,6 +146,7 @@ CREATE TABLE `employee_list` (
   `supervisor_id` int(30) NOT NULL,
   `ministry` varchar(50) NOT NULL,
   `section` varchar(50) NOT NULL,
+  `staff_no` text NOT NULL,
   `avatar` text DEFAULT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -109,11 +155,13 @@ CREATE TABLE `employee_list` (
 -- Dumping data for table `employee_list`
 --
 
-INSERT INTO `employee_list` (`id`, `employee_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `sex`, `dob`, `station`, `sup_lv_id`, `department_id`, `j_title_id`, `supervisor_id`, `ministry`, `section`, `avatar`, `date_created`) VALUES
-(3, '', 'Sandra', 'Kabuswe', 'Moyo', 'sandramoyo@gmail.com', '3fc5586bed4fb9f745500c0605197924', '', '0000-00-00', '', 0, 3, 3, 2, '', '', 'no-image-available.png', '2023-05-31 14:42:59'),
-(7, '', 'Albertina', '', 'Mwale', 'albertinamwale@gmail.com', '94133c84e5bff4e882e0914f3665a6b0', '', '0000-00-00', '', 0, 2, 6, 5, '', '', 'no-image-available.png', '2023-06-07 01:05:22'),
-(10, '', 'Judith', '', 'Mutale', 'judithmutale@gmail.com', 'f481aa3206ba8cb86cd50fe9d005a9b6', 'FEMALE', '0000-00-00', 'Chawama General Hospital', 0, 2, 6, 5, '', '', 'no-image-available.png', '2023-06-20 17:54:35'),
-(11, '', 'Margaret', 'Theresa', 'Njobvu', 'margaretnjobvu@gmail.com', '13dbe593780d21288a8c0b8a62386f65', 'FEMALE', '1998-12-07', 'Matero General Hospital', 1, 1, 5, 5, 'Health', 'ART', 'no-image-available.png', '2023-06-23 18:35:05');
+INSERT INTO `employee_list` (`id`, `employee_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `sex`, `dob`, `station`, `sup_lv_id`, `department_id`, `j_title_id`, `supervisor_id`, `ministry`, `section`, `staff_no`, `avatar`, `date_created`) VALUES
+(3, '', 'Sandra', 'Kabuswe', 'Moyo', 'sandramoyo@gmail.com', '3fc5586bed4fb9f745500c0605197924', '', '0000-00-00', '', 0, 3, 3, 2, '', '', '', 'no-image-available.png', '2023-05-31 14:42:59'),
+(7, '', 'Albertina', '', 'Mwale', 'albertinamwale@gmail.com', '94133c84e5bff4e882e0914f3665a6b0', '', '2023-04-22', 'Matero General Hospital', 1, 6, 9, 5, 'Health', 'ART', 'CDC-62', 'no-image-available.png', '2023-06-07 01:05:22'),
+(10, '', 'Judith', '', 'Mutale', 'judithmutale@gmail.com', 'f481aa3206ba8cb86cd50fe9d005a9b6', 'FEMALE', '0000-00-00', 'Chawama General Hospital', 0, 2, 6, 5, '', '', '', 'no-image-available.png', '2023-06-20 17:54:35'),
+(11, '', 'Margaret', 'Theresa', 'Njobvu', 'margaretnjobvu@gmail.com', '13dbe593780d21288a8c0b8a62386f65', 'FEMALE', '1998-12-07', 'Matero General Hospital', 1, 1, 5, 5, 'Health', 'ART', '', 'no-image-available.png', '2023-06-23 18:35:05'),
+(12, '', 'Edmond', '', 'Matende', 'edmondmatende@gmail.com', 'ebc5b7e543f54dc2bbe800ada3dffa91', 'MALE', '1998-04-06', 'Chipata general Hospital', 1, 1, 5, 5, 'Health', 'ICT', '', 'no-image-available.png', '2023-06-26 09:24:07'),
+(13, '', 'Mwiya', '', 'Mushahsu', 'mwiyamushashu@gmail.com', '98b54352aa199afd9296b00ee5c705f3', 'MALE', '1992-06-27', 'UTH', 1, 5, 5, 5, 'Health', 'M&E', 'CDC-45', 'no-image-available.png', '2023-06-29 13:11:03');
 
 -- --------------------------------------------------------
 
@@ -122,7 +170,8 @@ INSERT INTO `employee_list` (`id`, `employee_id`, `firstname`, `middlename`, `la
 --
 
 CREATE TABLE `job_description` (
-  `id` int(30) NOT NULL,
+  `job_id` int(30) NOT NULL,
+  `salary_scale` text NOT NULL,
   `j_title` varchar(200) NOT NULL,
   `j_purpose` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -131,9 +180,13 @@ CREATE TABLE `job_description` (
 -- Dumping data for table `job_description`
 --
 
-INSERT INTO `job_description` (`id`, `j_title`, `j_purpose`) VALUES
-(2, 'EHRO', 'Electronic Health Records Officer'),
-(5, 'Data Associate', 'Data Associate');
+INSERT INTO `job_description` (`job_id`, `salary_scale`, `j_title`, `j_purpose`) VALUES
+(5, '', 'Data Associate', 'Data Associate'),
+(7, '', 'HIV/TB Clinical Mentor-District Health Office', 'To undertake the provision of onsite clinical care technical support to all health facilities in the Districts for\r\nHIV/TB programs in order to improve clinical care services, HIV epidemic control and TB elimination.'),
+(8, '', 'Finance Office', 'To prepare monthly cash flow requests, documentation and\r\nfinancial reports in order to ensure adherence to financial regulations and guidelines.'),
+(9, '', 'HIV/TB Clinical Mentor - Sub-District Level', 'To undertake the provision of onsite clinical care technical support to all health facilities in the Sub District\r\nfor HIV/TB programs in order to improve clinical care services, HIV epidemic control and TB\r\nelimination.'),
+(11, '', 'Community Coordinator – Sub District', 'To coordinate the implementation of District community HIV/TB Programs in order to ensure that\r\nclients who are identified from the community are linked to health facilities in the treatment cascade.'),
+(12, '', 'Registered Nurse', 'To provide quality HIV prevention, counselling, treatment, care and support services in order to\r\nfacilitate provision of quality HIV health services');
 
 -- --------------------------------------------------------
 
@@ -181,6 +234,28 @@ INSERT INTO `ratings` (`id`, `employee_id`, `task_id`, `supervisor_id`, `efficie
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `score_comments`
+--
+
+CREATE TABLE `score_comments` (
+  `id` int(11) NOT NULL,
+  `apas_id` int(30) NOT NULL,
+  `app_achieved` text NOT NULL,
+  `app_not_achieved` text NOT NULL,
+  `sup_achieved` text NOT NULL,
+  `sup_not_achieved` text NOT NULL,
+  `ministrial_contribution` text NOT NULL,
+  `sign_1` text NOT NULL,
+  `sign_2` text NOT NULL,
+  `sign_3` text NOT NULL,
+  `date1` datetime NOT NULL DEFAULT current_timestamp(),
+  `date2` datetime NOT NULL DEFAULT current_timestamp(),
+  `date3` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `supervisor_list`
 --
 
@@ -200,6 +275,7 @@ CREATE TABLE `supervisor_list` (
   `j_title_id` int(30) NOT NULL,
   `ministry` varchar(50) NOT NULL,
   `section` varchar(50) NOT NULL,
+  `staff_no` text NOT NULL,
   `avatar` text DEFAULT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -208,10 +284,11 @@ CREATE TABLE `supervisor_list` (
 -- Dumping data for table `supervisor_list`
 --
 
-INSERT INTO `supervisor_list` (`id`, `employee_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `sex`, `DOB`, `station`, `sup_lv_id`, `department_id`, `j_title_id`, `ministry`, `section`, `avatar`, `date_created`) VALUES
-(2, '', 'Maurice', '', 'Manzi', 'mauricemanzi@yahoo.com', '89c2aea4392de83c2694ff08b10fce05', '', NULL, '', 0, 0, 0, '', '', '1685565660_1607134440_avatar.jpg', '2023-05-31 14:41:21'),
-(5, '', 'David', '', 'Mwelwa', 'davidgarciajr955@gmail.com', '55fc5b709962876903785fd64a6961e5', '', NULL, '', 0, 0, 0, '', '', '1686121140_1607134320_avatar.jpg', '2023-06-07 00:59:32'),
-(6, '', 'Catherine', '', 'Chitongo', 'catherinechitongo@gmail.com', '78c37baa5d6b1de1cccb1e356ac41034', 'FEMALE', '1972-06-14', 'Chawama General Hospital', 3, 5, 2, 'Health', 'Administration', 'no-image-available.png', '2023-06-23 18:36:33');
+INSERT INTO `supervisor_list` (`id`, `employee_id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `sex`, `DOB`, `station`, `sup_lv_id`, `department_id`, `j_title_id`, `ministry`, `section`, `staff_no`, `avatar`, `date_created`) VALUES
+(2, '', 'Maurice', '', 'Manzi', 'mauricemanzi@yahoo.com', '89c2aea4392de83c2694ff08b10fce05', '', NULL, '', 0, 0, 0, '', '', '', '1685565660_1607134440_avatar.jpg', '2023-05-31 14:41:21'),
+(5, '', 'David', '', 'Mwelwa', 'davidgarciajr955@gmail.com', '55fc5b709962876903785fd64a6961e5', '', NULL, '', 0, 0, 0, '', '', '', '1686121140_1607134320_avatar.jpg', '2023-06-07 00:59:32'),
+(6, '', 'Catherine', '', 'Chitongo', 'catherinechitongo@gmail.com', '78c37baa5d6b1de1cccb1e356ac41034', 'FEMALE', '1972-06-14', 'Chawama General Hospital', 3, 5, 2, 'Health', 'Administration', '', 'no-image-available.png', '2023-06-23 18:36:33'),
+(7, '', 'Martin', '', 'Mwenda', 'martinmwenda@gmail.com', '34f74c049edea51851c6924f4a386762', 'MALE', '1995-02-02', 'Chawama', 1, 5, 2, 'Health', 'M&E', '', '1687616640_logo3.jpg', '2023-06-24 16:24:18');
 
 -- --------------------------------------------------------
 
@@ -262,7 +339,7 @@ CREATE TABLE `system_settings` (
 --
 
 INSERT INTO `system_settings` (`id`, `name`, `short_form`, `email`, `contact`, `address`, `about`, `cover_img`) VALUES
-(1, 'HR Individual Work Plan & Appraisal System', 'HR(IWPAS)', 'info@lpho.com', '+260 972862797', 'Lusaka Provincial Health Office, Zambia', '<h1 style=\"margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-family: DauphinPlain; line-height: 90px; color: rgb(255, 255, 255); font-size: 70px; padding: 0px; text-align: center;\">ABOUT ESAMS</h1><h4 style=\"margin: 10px 10px 5px; font-family: &quot;Open Sans&quot;, Arial, sans-serif; line-height: 18px; color: rgb(255, 255, 255); font-size: 14px; padding: 0px; text-align: center; font-style: italic;\">\"For the Love of the Echo Sound\"</h4><h5 style=\"margin: 5px 10px 20px; font-family: &quot;Open Sans&quot;, Arial, sans-serif; line-height: 14px; color: rgb(255, 255, 255); font-size: 12px; padding: 0px; text-align: center;\">\"\"</h5><div id=\"Content\" style=\"margin: 0px; padding: 0px; position: relative; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; text-align: center; background-color: rgb(255, 255, 255);\"><div class=\"boxed\" style=\"margin: 10px 28.7969px; padding: 0px; clear: both;\"><div id=\"lipsum\" style=\"margin: 0px; padding: 0px; text-align: justify;\"></div></div></div><hr style=\"height: 1px; margin: 0px; border-top: 0px; padding: 0px; clear: both; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0)); color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; text-align: center; background-color: rgb(255, 255, 255);\"><p style=\"text-align: center;\"><span style=\"text-align: justify;\">The HR Individual Work Plan & Appraisal system was developed by the Lusaka Provincial Health Office (LPHO) with the goal to digitize Human Resource Appraisal system. The HR(IWPAS) is an electronic system that electronically performs the evaluation of health staff performance taking into account the rating, on both the targets and performance competencies </span></p>', '1687538940_logo3.jpg');
+(1, 'HR Annual Performance Appraisal System', 'HR (APAS)', 'info@lpho.com', '+260 972862797', 'Lusaka Provincial Health Office, Zambia', '<h1 style=\"margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-family: DauphinPlain; line-height: 90px; color: rgb(255, 255, 255); font-size: 70px; padding: 0px; text-align: center;\">ABOUT ESAMS</h1><h4 style=\"margin: 10px 10px 5px; font-family: &quot;Open Sans&quot;, Arial, sans-serif; line-height: 18px; color: rgb(255, 255, 255); font-size: 14px; padding: 0px; text-align: center; font-style: italic;\">\"For the Love of the Echo Sound\"</h4><h5 style=\"margin: 5px 10px 20px; font-family: &quot;Open Sans&quot;, Arial, sans-serif; line-height: 14px; color: rgb(255, 255, 255); font-size: 12px; padding: 0px; text-align: center;\">\"\"</h5><div id=\"Content\" style=\"margin: 0px; padding: 0px; position: relative; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; text-align: center; background-color: rgb(255, 255, 255);\"><div class=\"boxed\" style=\"margin: 10px 28.7969px; padding: 0px; clear: both;\"><div id=\"lipsum\" style=\"margin: 0px; padding: 0px; text-align: justify;\"></div></div></div><hr style=\"height: 1px; margin: 0px; border-top: 0px; padding: 0px; clear: both; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0)); color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; text-align: center; background-color: rgb(255, 255, 255);\"><p style=\"text-align: center;\"><span style=\"text-align: justify;\">The HR Individual Work Plan & Appraisal system was developed by the Lusaka Provincial Health Office (LPHO) with the goal to digitize Human Resource Appraisal system. The HR(IWPAS) is an electronic system that electronically performs the evaluation of health staff performance taking into account the rating, on both the targets and performance competencies </span></p>', '1687538940_logo3.jpg');
 
 -- --------------------------------------------------------
 
@@ -287,7 +364,12 @@ CREATE TABLE `task_list` (
 
 INSERT INTO `task_list` (`id`, `task`, `description`, `employee_id`, `due_date`, `completed`, `status`, `date_created`) VALUES
 (6, 'give covax to 150 people every week for one', 'target to give covid19 vaccine to at least 150 clients/week', 7, '2023-06-07', '0000-00-00', 2, '2023-06-07 01:10:44'),
-(7, 'Collect and Update HIV Patients Files', 'Patients HIV data Reports are needed urgently', 8, '2023-06-08', '0000-00-00', 2, '2023-06-08 07:54:39');
+(7, 'Collect and Update HIV Patients Files', 'Patients HIV data Reports are needed urgently', 8, '2023-06-08', '0000-00-00', 2, '2023-06-08 07:54:39'),
+(8, 'type and print all the documents', 'we need the documents by the end of the day', 12, '2023-06-26', '0000-00-00', 0, '2023-06-26 09:25:55'),
+(9, 'type and print all the documents', 'we need them', 12, '2023-06-26', '0000-00-00', 0, '2023-06-26 09:27:16'),
+(10, 'ifiugifWSTIHJF', 'jdduzrutzfsread', 10, '2023-06-26', '0000-00-00', 0, '2023-06-26 09:39:44'),
+(11, 'adsgfjkjtfsg', 'asgfdfjf', 12, '2023-06-26', '0000-00-00', 0, '2023-06-26 14:03:53'),
+(12, 'prepare the reports', 'fusfgufguvjjjjgeff', 13, '2023-07-01', '0000-00-00', 0, '2023-06-30 11:59:06');
 
 -- --------------------------------------------------------
 
@@ -334,6 +416,15 @@ CREATE TABLE `users` (
   `lastname` varchar(200) NOT NULL,
   `email` varchar(200) NOT NULL,
   `password` text NOT NULL,
+  `sex` varchar(20) NOT NULL,
+  `DOB` date DEFAULT NULL,
+  `station` varchar(50) NOT NULL,
+  `sup_lv_id` int(10) NOT NULL,
+  `department_id` int(30) NOT NULL,
+  `j_title_id` int(30) NOT NULL,
+  `ministry` varchar(50) NOT NULL,
+  `section` varchar(50) NOT NULL,
+  `staff_no` text NOT NULL,
   `avatar` text DEFAULT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -342,8 +433,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `firstname`, `lastname`, `email`, `password`, `avatar`, `date_created`) VALUES
-(1, 'David', 'Mwelwa', 'davidgarciajr955@gmail.com', '55fc5b709962876903785fd64a6961e5', '1607135820_avatar.jpg', '2020-11-26 10:57:04');
+INSERT INTO `users` (`id`, `firstname`, `lastname`, `email`, `password`, `sex`, `DOB`, `station`, `sup_lv_id`, `department_id`, `j_title_id`, `ministry`, `section`, `staff_no`, `avatar`, `date_created`) VALUES
+(1, 'David', 'Mwelwa', 'davidgarciajr955@gmail.com', '55fc5b709962876903785fd64a6961e5', '', NULL, '', 0, 0, 0, '', '', '', '1607135820_avatar.jpg', '2020-11-26 10:57:04'),
+(4, 'Maurice', 'Manzi', 'mauricemanzi@yahoo.com', '491a44a3455c2a21938691737c47e60d', '', NULL, '', 0, 0, 0, '', '', '', 'no-image-available.png', '2023-06-24 14:46:36');
 
 -- --------------------------------------------------------
 
@@ -357,9 +449,13 @@ CREATE TABLE `work_plan` (
   `targets` text NOT NULL,
   `p_accountability` text NOT NULL,
   `activ_schedule` text NOT NULL,
+  `supervisor_id` int(30) NOT NULL,
+  `user_id` int(30) NOT NULL,
   `employee_id` int(30) NOT NULL,
-  `start_date` date NOT NULL,
+  `start_date` date DEFAULT NULL,
   `end_date` date NOT NULL,
+  `completed` date DEFAULT NULL,
+  `status` int(1) NOT NULL COMMENT '0=pending, 1=on-progress, 3=completed',
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -367,18 +463,29 @@ CREATE TABLE `work_plan` (
 -- Dumping data for table `work_plan`
 --
 
-INSERT INTO `work_plan` (`id`, `kra_name`, `targets`, `p_accountability`, `activ_schedule`, `employee_id`, `start_date`, `end_date`, `date_created`) VALUES
-(1, '<b><span lang=\"EN-GB\" style=\"font-size:11.5pt;\r\nfont-family:&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;\r\nmso-ansi-language:EN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">System\r\nManagement</span></b>													    ', '&lt;span lang=&quot;EN-GB&quot; style=&quot;font-size:11.5pt;font-family:\r\n&amp;quot;Times New Roman&amp;quot;,serif;mso-fareast-font-family:&amp;quot;Times New Roman&amp;quot;;mso-ansi-language:\r\nEN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA&quot;&gt;facilities running\r\nSmartcare e-First in the subdistrict monitored weekly in order to check that\r\nSmart-care EHR System is functioning efficiently &lt;/span&gt;&lt;span lang=&quot;EN-GB&quot; style=&quot;font-size:12.0pt;font-family:&amp;quot;Times New Roman&amp;quot;,serif;mso-fareast-font-family:\r\n&amp;quot;Times New Roman&amp;quot;;mso-ansi-language:EN-GB;mso-fareast-language:EN-US;\r\nmso-bidi-language:AR-SA&quot;&gt;in order to effectively and efficiently implement HIV\r\ndata management and reporting&lt;/span&gt;													', '<span lang=\"EN-GB\" style=\"font-size:12.0pt;font-family:\r\n&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:\r\nEN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">Ensures\r\nfunctionality, maintenance and use of electronic health records systems in all\r\nsupported health facilities in the district and/or sub district in order to\r\neffectively and efficiently implement HIV data management and reporting</span>													', '<p class=\"MsoNormalCxSpFirst\" style=\"margin-left:6.75pt;mso-add-space:auto;\r\ntext-indent:-7.1pt;mso-list:l0 level1 lfo1\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Bookman Old Style&quot;,serif;\r\nmso-fareast-font-family:&quot;Bookman Old Style&quot;;mso-bidi-font-family:&quot;Bookman Old Style&quot;\">-<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\"> </span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">Weekly schedule to visit all 5 facilities\r\ncurrently implementing Smartcare e-First are developed<o:p></o:p></span></p>\r\n\r\n<span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Times New Roman&quot;,serif;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:EN-GB;mso-fareast-language:\r\nEN-US;mso-bidi-language:AR-SA\">Visitations done to each Electronic Health\r\nRecords Systems implementing facility weekly</span>													', 0, '2023-06-22', '2023-07-26', '2023-06-22 17:17:20');
+INSERT INTO `work_plan` (`id`, `kra_name`, `targets`, `p_accountability`, `activ_schedule`, `supervisor_id`, `user_id`, `employee_id`, `start_date`, `end_date`, `completed`, `status`, `date_created`) VALUES
+(1, '<b><span lang=\"EN-GB\" style=\"font-size:11.5pt;\r\nfont-family:&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;\r\nmso-ansi-language:EN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">System\r\nManagement</span></b>													    ', '&lt;span lang=&quot;EN-GB&quot; style=&quot;font-size:11.5pt;font-family:\r\n&amp;quot;Times New Roman&amp;quot;,serif;mso-fareast-font-family:&amp;quot;Times New Roman&amp;quot;;mso-ansi-language:\r\nEN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA&quot;&gt;facilities running\r\nSmartcare e-First in the subdistrict monitored weekly in order to check that\r\nSmart-care EHR System is functioning efficiently &lt;/span&gt;&lt;span lang=&quot;EN-GB&quot; style=&quot;font-size:12.0pt;font-family:&amp;quot;Times New Roman&amp;quot;,serif;mso-fareast-font-family:\r\n&amp;quot;Times New Roman&amp;quot;;mso-ansi-language:EN-GB;mso-fareast-language:EN-US;\r\nmso-bidi-language:AR-SA&quot;&gt;in order to effectively and efficiently implement HIV\r\ndata management and reporting&lt;/span&gt;													', '<span lang=\"EN-GB\" style=\"font-size:12.0pt;font-family:\r\n&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:\r\nEN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">Ensures\r\nfunctionality, maintenance and use of electronic health records systems in all\r\nsupported health facilities in the district and/or sub district in order to\r\neffectively and efficiently implement HIV data management and reporting</span>													', '<p class=\"MsoNormalCxSpFirst\" style=\"margin-left:6.75pt;mso-add-space:auto;\r\ntext-indent:-7.1pt;mso-list:l0 level1 lfo1\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Bookman Old Style&quot;,serif;\r\nmso-fareast-font-family:&quot;Bookman Old Style&quot;;mso-bidi-font-family:&quot;Bookman Old Style&quot;\">-<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\"> </span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">Weekly schedule to visit all 5 facilities\r\ncurrently implementing Smartcare e-First are developed<o:p></o:p></span></p>\r\n\r\n<span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Times New Roman&quot;,serif;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:EN-GB;mso-fareast-language:\r\nEN-US;mso-bidi-language:AR-SA\">Visitations done to each Electronic Health\r\nRecords Systems implementing facility weekly</span>													', 0, 0, 2, '2023-06-22', '2023-07-26', NULL, 0, '2023-06-22 17:17:20'),
+(7, 'ihgzufz rsease5trzu', 'fzutrsw4strtzu', 'utgfzztdeyerxcf', 'gzcrsesxczjn', 0, 0, 7, '0000-00-00', '2023-10-23', '0000-00-00', 0, '0000-00-00 00:00:00'),
+(8, '<b><span lang=\"EN-GB\" style=\"font-size:11.5pt;\r\nfont-family:&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;\r\nmso-ansi-language:EN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">System\r\nManagement</span></b>													    ', '<span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:\r\n&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:\r\nEN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">5 facilities running\r\nSmartcare e-First in the subdistrict monitored weekly in order to check that\r\nSmart-care EHR System is functioning efficiently </span><span lang=\"EN-GB\" style=\"font-size:12.0pt;font-family:&quot;Times New Roman&quot;,serif;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;mso-ansi-language:EN-GB;mso-fareast-language:EN-US;\r\nmso-bidi-language:AR-SA\">in order to effectively and efficiently implement HIV\r\ndata management and reporting</span>													', '<span lang=\"EN-GB\" style=\"font-size:12.0pt;font-family:\r\n&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:\r\nEN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">Ensures\r\nfunctionality, maintenance and use of electronic health records systems in all\r\nsupported health facilities in the district and/or sub district in order to\r\neffectively and efficiently implement HIV data management and reporting</span>													', '<p class=\"MsoNormalCxSpFirst\" style=\"margin-left:6.75pt;mso-add-space:auto;\r\ntext-indent:-7.1pt;mso-list:l0 level1 lfo1\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Bookman Old Style&quot;,serif;\r\nmso-fareast-font-family:&quot;Bookman Old Style&quot;;mso-bidi-font-family:&quot;Bookman Old Style&quot;\">-<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\"> </span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">Weekly schedule to visit all 5 facilities\r\ncurrently implementing Smartcare e-First are developed<o:p></o:p></span></p>\r\n\r\n<p class=\"MsoNormalCxSpMiddle\" style=\"margin-left:6.75pt;mso-add-space:auto;\r\ntext-indent:-7.1pt;mso-list:l0 level1 lfo1\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Bookman Old Style&quot;,serif;\r\nmso-fareast-font-family:&quot;Bookman Old Style&quot;;mso-bidi-font-family:&quot;Bookman Old Style&quot;\">-<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\"> </span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">Visitations done to each Electronic Health\r\nRecords Systems implementing facility weekly<o:p></o:p></span></p>\r\n\r\n<span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Times New Roman&quot;,serif;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:EN-GB;mso-fareast-language:\r\nEN-US;mso-bidi-language:AR-SA\">Ensured functionality and use of Smartcare in\r\nall supported facilities in the subdistrict to enhance and improve HIV data\r\nmanagement and reporting during the weekly visits</span>													', 0, 0, 13, '2023-06-29', '2023-10-22', '0000-00-00', 0, '0000-00-00 00:00:00'),
+(9, '<b><span lang=\"EN-GB\" style=\"font-size:11.5pt;\r\nfont-family:&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;\r\nmso-ansi-language:EN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">Electronic\r\nSystem Rollout&nbsp;</span></b>													    ', '<p class=\"MsoNormal\" style=\"margin-left:12.25pt;text-indent:-9.6pt;mso-list:l0 level1 lfo1\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol\">·<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp; </span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">100% Facility Smartcare needs assessments\r\nconducted in the Sub-District within the first 2 weeks of the 1<sup>st</sup>\r\nQuarter,<o:p></o:p></span></p>													', '<span lang=\"EN-GB\" style=\"font-size:12.0pt;font-family:\r\n&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:\r\nEN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">Ensures that a plan\r\nis in place and implemented to rollout electronic systems in the sub-district/district&nbsp; in order to enhance effective and efficient\r\nservice delivery&nbsp;</span>													', '<p class=\"MsoNormalCxSpFirst\" style=\"margin-left:6.75pt;mso-add-space:auto;\r\ntext-indent:-6.75pt;mso-list:l0 level1 lfo1\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Bookman Old Style&quot;,serif;\r\nmso-fareast-font-family:&quot;Bookman Old Style&quot;;mso-bidi-font-family:&quot;Bookman Old Style&quot;\">-<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\"> </span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">Electronic Health Record (EHR) systems\r\nassessment in all supported facilities in the sub district carried out within\r\nthe 1<sup>st</sup> 2 week of deployment,<o:p></o:p></span></p>													', 0, 0, 12, '2023-06-29', '2023-08-23', '0000-00-00', 0, '0000-00-00 00:00:00'),
+(10, '<b><span lang=\"EN-GB\" style=\"font-size:11.5pt;\r\nfont-family:&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;\r\nmso-ansi-language:EN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">Electronic\r\nSystem Implementation&nbsp;</span></b>													    ', '<p class=\"MsoNormal\" style=\"margin-left:16.55pt;text-indent:-13.5pt;mso-list:\r\nl0 level1 lfo2\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;\r\nfont-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol\">·<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n</span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">In 13\r\nSmartcare facilities, supervised the clearance of backlog weekly;<o:p></o:p></span></p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-left:14.3pt\"><span lang=\"EN-GB\" style=\"font-size:11.5pt\">&nbsp;</span></p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-left:14.3pt;text-indent:-13.5pt;mso-list:l1 level1 lfo1\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol\">·<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">9 Transport Database (TDBs) Collected from\r\nSC Legacy Facilities monthly<o:p></o:p></span></p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-left:14.3pt\"><span lang=\"EN-GB\" style=\"font-size:11.5pt\">&nbsp;</span></p>\r\n\r\n<span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Times New Roman&quot;,serif;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:EN-GB;mso-fareast-language:\r\nEN-US;mso-bidi-language:AR-SA\">9 Transport Database (TDBs) submitted date to\r\nLusaka District Health Office and Lusaka Provincial Health Office by fifth day\r\nof each month </span><span lang=\"EN-GB\" style=\"font-size:12.0pt;font-family:&quot;Times New Roman&quot;,serif;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:EN-GB;mso-fareast-language:\r\nEN-US;mso-bidi-language:AR-SA\">in order to ensure smooth smartcare\r\nimplementation.</span><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:\r\n&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:\r\nEN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">.</span>													', '<span lang=\"EN-GB\" style=\"font-size:12.0pt;font-family:\r\n&quot;Times New Roman&quot;,serif;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:\r\nEN-GB;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">Ensures that they are\r\nno backlogs; and are providing Transport Databases (TDBs) on monthly basis to\r\ndistrict and the Provincial Health Office in order to ensure smooth smartcare\r\nimplementation.&nbsp;</span>													', '<p class=\"MsoNormalCxSpFirst\" style=\"margin-left:6.75pt;mso-add-space:auto;\r\ntext-indent:-6.75pt;mso-list:l0 level1 lfo1\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Bookman Old Style&quot;,serif;\r\nmso-fareast-font-family:&quot;Bookman Old Style&quot;;mso-bidi-font-family:&quot;Bookman Old Style&quot;\">-<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\"> </span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">Smartcare implementing facilities visited\r\non weekly basis<o:p></o:p></span></p>\r\n\r\n<p class=\"MsoNormalCxSpMiddle\"><span lang=\"EN-GB\" style=\"font-size:11.5pt\">&nbsp;</span></p>\r\n\r\n<p class=\"MsoNormalCxSpMiddle\" style=\"margin-left:6.75pt;mso-add-space:auto;\r\ntext-indent:-6.75pt;mso-list:l0 level1 lfo1\"><!--[if !supportLists]--><span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Bookman Old Style&quot;,serif;\r\nmso-fareast-font-family:&quot;Bookman Old Style&quot;;mso-bidi-font-family:&quot;Bookman Old Style&quot;\">-<span style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\"> </span></span><!--[endif]--><span lang=\"EN-GB\" style=\"font-size:11.5pt\">Made sure all client files are entered in\r\nthe system and there is no backlog&nbsp; on\r\nweekly visits to facilities and<o:p></o:p></span></p>\r\n\r\n<p class=\"MsoNormalCxSpMiddle\"><span lang=\"EN-GB\" style=\"font-size:11.5pt\">&nbsp;</span></p>\r\n\r\n<span lang=\"EN-GB\" style=\"font-size:11.5pt;font-family:&quot;Times New Roman&quot;,serif;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:EN-GB;mso-fareast-language:\r\nEN-US;mso-bidi-language:AR-SA\">TDBs from all Smartcare implementing facilities\r\ncollected, backed up and submitted to the District and Provincial Health Office\r\nat the end of each month</span>													', 0, 0, 12, '2023-06-29', '2023-08-23', '0000-00-00', 0, '0000-00-00 00:00:00'),
+(11, 'Capacity Building&nbsp;													    ', 'Train clinicians modern HIV prevention techniques and management', '<div>Undertakes effectively the development and implementation of</div><div>HIV/TB treatment capacity building programmes in clinical care</div><div>staff in order in order to improve the quality of HIV/TB</div><div>treatment/care services.</div>													', 'to meet clinicians to discuss and address the challenges faced in HIV prevention programs', 0, 0, 7, '2023-06-30', '2023-07-01', '0000-00-00', 0, '0000-00-00 00:00:00');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `apas`
+-- Indexes for table `apas_rating`
 --
-ALTER TABLE `apas`
+ALTER TABLE `apas_rating`
   ADD PRIMARY KEY (`apas_id`);
+
+--
+-- Indexes for table `appraisal_comments`
+--
+ALTER TABLE `appraisal_comments`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `department_list`
@@ -402,7 +509,7 @@ ALTER TABLE `employee_list`
 -- Indexes for table `job_description`
 --
 ALTER TABLE `job_description`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`job_id`);
 
 --
 -- Indexes for table `kra_tbl`
@@ -463,16 +570,22 @@ ALTER TABLE `work_plan`
 --
 
 --
--- AUTO_INCREMENT for table `apas`
+-- AUTO_INCREMENT for table `apas_rating`
 --
-ALTER TABLE `apas`
-  MODIFY `apas_id` int(30) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `apas_rating`
+  MODIFY `apas_id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `appraisal_comments`
+--
+ALTER TABLE `appraisal_comments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `department_list`
 --
 ALTER TABLE `department_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `document_list`
@@ -484,13 +597,13 @@ ALTER TABLE `document_list`
 -- AUTO_INCREMENT for table `employee_list`
 --
 ALTER TABLE `employee_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `job_description`
 --
 ALTER TABLE `job_description`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `job_id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `kra_tbl`
@@ -508,7 +621,7 @@ ALTER TABLE `ratings`
 -- AUTO_INCREMENT for table `supervisor_list`
 --
 ALTER TABLE `supervisor_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `system_info`
@@ -526,7 +639,7 @@ ALTER TABLE `system_settings`
 -- AUTO_INCREMENT for table `task_list`
 --
 ALTER TABLE `task_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `task_progress`
@@ -538,13 +651,13 @@ ALTER TABLE `task_progress`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `work_plan`
 --
 ALTER TABLE `work_plan`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

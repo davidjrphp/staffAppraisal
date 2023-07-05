@@ -1,7 +1,7 @@
 <?php
 include 'db_connect.php';
-if (isset($_GET['id'])) {
-	$qry = $conn->query("SELECT * FROM job_description where id={$_GET['id']}")->fetch_array();
+if (isset($_GET['job_id'])) {
+	$qry = $conn->query("SELECT * FROM job_description where job_id = {$_GET['job_id']}")->fetch_array();
 	foreach ($qry as $k => $v) {
 		$$k = $v;
 	}
@@ -9,7 +9,7 @@ if (isset($_GET['id'])) {
 ?>
 <div class="container-fluid">
 	<form action="" id="manage-designation">
-		<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
+		<input type="hidden" name="job_id" value="<?php echo isset($job_id) ? $job_id : '' ?>">
 		<div id="msg" class="form-group"></div>
 		<div class="form-group">
 			<label for="j_title" class="control-label">Job Title</label>
@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
 							location.reload()
 						}, 1750)
 					} else if (resp == 2) {
-						$('#msg').html('<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> Job Title already exist.</div>')
+						$('#msg').html('<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> designation already exist.</div>')
 						end_load()
 					}
 				}

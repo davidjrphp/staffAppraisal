@@ -2,9 +2,12 @@
 <div class="col-lg-12">
 	<div class="card card-outline card-success">
 		<div class="card-header">
-			<div class="card-tools">
-				<a class="btn btn-block btn-sm btn-default btn-flat border-primary" href="./index.php?page=new_employee"><i class="fa fa-plus"></i> Add New Employee</a>
-			</div>
+			<?php if ($_SESSION['login_type'] == 2) : ?>
+				<div class="card-tools">
+					<a class="btn btn-block btn-sm btn-default btn-flat border-primary" href="./index.php?page=new_employee"><i class="fa fa-plus"></i> Add New Employee</a>
+				</div>
+			<?php endif;
+			?>
 		</div>
 		<div class="card-body">
 			<table class="table tabe-hover table-bordered" id="list">
@@ -24,7 +27,7 @@
 					$j_title = $conn->query("SELECT * FROM job_description ");
 					$design_arr[0] = "Unset";
 					while ($row = $j_title->fetch_assoc()) {
-						$design_arr[$row['id']] = $row['j_title'];
+						$design_arr[$row['job_id']] = $row['j_title'];
 					}
 					$departments = $conn->query("SELECT * FROM department_list ");
 					$dept_arr[0] = "Unset";
@@ -47,9 +50,13 @@
 								<div class="dropdown-menu" style="">
 									<a class="dropdown-item view_employee" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">View</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="./index.php?page=edit_employee&id=<?php echo $row['id'] ?>">Edit</a>
+									<a class="dropdown-item" href="./index.php?page=target_rating&id=<?php echo $row['id'] ?>">Rate</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item delete_employee" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">Delete</a>
+									<?php if ($_SESSION['login_type'] == 2) : ?>
+										<a class="dropdown-item" href="./index.php?page=edit_employee&id=<?php echo $row['id'] ?>">Edit</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item delete_employee" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">Delete</a>
+									<?php endif; ?>
 								</div>
 							</td>
 						</tr>

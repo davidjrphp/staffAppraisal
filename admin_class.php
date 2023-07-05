@@ -301,17 +301,17 @@ class Action
 				}
 			}
 		}
-		$chk = $this->db->query("SELECT * FROM job_description where j_title = '$j_title' and id != '{$id}' ")->num_rows;
+		$chk = $this->db->query("SELECT * FROM job_description where j_title = '$j_title' and job_id != '{$job_id}' ")->num_rows;
 		if ($chk > 0) {
 			return 2;
 		}
 		if (isset($user_ids)) {
 			$data .= ", user_ids='" . implode(',', $user_ids) . "' ";
 		}
-		if (empty($id)) {
+		if (empty($job_id)) {
 			$save = $this->db->query("INSERT INTO job_description set $data");
 		} else {
-			$save = $this->db->query("UPDATE job_description set $data where id = $id");
+			$save = $this->db->query("UPDATE job_description set $data where job_id = $job_id");
 		}
 		if ($save) {
 			return 1;
@@ -320,7 +320,7 @@ class Action
 	function delete_designation()
 	{
 		extract($_POST);
-		$delete = $this->db->query("DELETE FROM job_decsription where id = $id");
+		$delete = $this->db->query("DELETE FROM job_description where job_id = $job_id");
 		if ($delete) {
 			return 1;
 		}
@@ -449,7 +449,8 @@ class Action
 			return 1;
 		}
 	}
-	function save_work_plan()
+
+	/*function save_work_plan()
 	{
 		extract($_POST);
 		$data = "";
@@ -464,6 +465,7 @@ class Action
 				}
 			}
 		}
+		//echo ('hello');
 		if (empty($id)) {
 			$save = $this->db->query("INSERT INTO work_plan set $data");
 		} else {
@@ -472,7 +474,7 @@ class Action
 		if ($save) {
 			return 1;
 		}
-	}
+	}*/
 	function delete_work_plan()
 	{
 		extract($_POST);

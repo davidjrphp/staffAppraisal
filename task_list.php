@@ -36,6 +36,7 @@
 						$where = " where t.employee_id = '{$_SESSION['login_id']}' ";
 					elseif ($_SESSION['login_type'] == 1)
 						$where = " where e.supervisor_id = {$_SESSION['login_id']} ";
+	
 
 
 					$qry = $conn->query("SELECT t.*,concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM task_list t inner join employee_list e on e.id = t.employee_id $where order by unix_timestamp(t.date_created) asc");
