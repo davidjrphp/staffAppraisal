@@ -17,6 +17,7 @@
             $department_id = 0;
             $supervisor_id = 0;
             $staff_no = 0;
+            $date_created = 0;
             if (isset($_SESSION['login_id'])) {
                 $qry = $conn->query("SELECT e.*, concat(e.lastname, ', ', e.firstname, ' ', e.middlename) as name, s.lastname, s.firstname
                                     FROM employee_list e
@@ -76,7 +77,7 @@
                     <div class="row mt-4">
                         <div class="col-md-6">
                             <h5><b>DATE OF APPOINTMENT TO PRESENT POST:</b></h5>
-                            <p><?php echo ucwords($_SESSION['login_date_created']) ?></p>
+                            <p><?php echo date("m d,Y", strtotime($date_created)) ?></p>
                         </div>
                         <div class="col-md-6">
                             <h5><b>MINISTRY/PROVINCE:</b></h5>
@@ -123,8 +124,8 @@
                         $$k = $v;
                     }
                 }
-                $j_title = $conn->query("SELECT * FROM job_description where job_id = $j_title_id ");
-                $j_title = $j_title->num_rows > 0 ? $j_title->fetch_array()['j_title'] : 'Unknown Job Description';
+                $j_purpose = $conn->query("SELECT * FROM job_description where job_id = $j_title_id ");
+                $j_purpose = $j_purpose->num_rows > 0 ? $j_purpose->fetch_array()['j_purpose'] : 'Unknown Job Description';
                 $department = $conn->query("SELECT * FROM department_list where id = $department_id ");
                 $department = $department->num_rows > 0 ? $department->fetch_array()['department'] : 'Unknown Department';
                 $supervisor = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM supervisor_list where id = $supervisor_id ");
@@ -137,7 +138,7 @@
                 <br>
                 <h6>2.1 Purpose of the Job</h6>
                 <h6><i>(to be completed by the Appraisee)</i></h6>
-                <h5><?php echo $j_title ?></h5>
+                <p><?php echo $j_purpose ?></p>
                 <br>
                 <h6>2.2 Key Result Area and principle Accountability</h6>
                 <h6><i>(to be completed by the Appraisee)</i></h6>
@@ -161,13 +162,14 @@
                         if ($_SESSION['login_type'] == 0) {
                             $where = " WHERE w.employee_id = '{$_SESSION['login_id']}' ";
                         } elseif ($_SESSION['login_type'] == 1) {
-                            $where = " WHERE e.supervisor_id = {$_SESSION['login_id']} ";
+                            $where = " WHERE w.supervisor_id = {$_SESSION['login_id']} ";
                         } elseif ($_SESSION['login_type'] == 2) {
                             $where = " WHERE w.user_id = {$_SESSION['login_id']} ";
                         }
 
-                        $qry = $conn->query("SELECT * FROM work_plan WHERE employee_id = '{$_SESSION['login_id']}'");
-                        //$qry = $conn->query("SELECT w.*, concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM work_plan w INNER JOIN employee_list e ON e.id = w.employee_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
+                        //$qry = $conn->query("SELECT * FROM work_plan WHERE employee_id = '{$_SESSION['login_id']}'");
+                        $qry = $conn->query("SELECT w.*, concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM work_plan w INNER JOIN employee_list e ON e.id = w.employee_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
+                        $qry = $conn->query("SELECT w.*, concat(s.lastname,', ',s.firstname,' ',s.middlename) as name FROM work_plan w INNER JOIN supervisor_list s ON s.id = w.supervisor_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
                         while ($row = $qry->fetch_assoc()) {
                             $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
                             unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
@@ -248,13 +250,14 @@
                                 if ($_SESSION['login_type'] == 0) {
                                     $where = " WHERE w.employee_id = '{$_SESSION['login_id']}' ";
                                 } elseif ($_SESSION['login_type'] == 1) {
-                                    $where = " WHERE e.supervisor_id = {$_SESSION['login_id']} ";
+                                    $where = " WHERE w.supervisor_id = {$_SESSION['login_id']} ";
                                 } elseif ($_SESSION['login_type'] == 2) {
                                     $where = " WHERE w.user_id = {$_SESSION['login_id']} ";
                                 }
 
-                                $qry = $conn->query("SELECT * FROM work_plan WHERE employee_id = '{$_SESSION['login_id']}'");
-                                //$qry = $conn->query("SELECT w.*, concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM work_plan w INNER JOIN employee_list e ON e.id = w.employee_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
+                                //$qry = $conn->query("SELECT * FROM work_plan WHERE employee_id = '{$_SESSION['login_id']}'");
+                                $qry = $conn->query("SELECT w.*, concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM work_plan w INNER JOIN employee_list e ON e.id = w.employee_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
+                                $qry = $conn->query("SELECT w.*, concat(s.lastname,', ',s.firstname,' ',s.middlename) as name FROM work_plan w INNER JOIN supervisor_list s ON s.id = w.supervisor_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
                                 while ($row = $qry->fetch_assoc()) {
                                     $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
                                     unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
@@ -282,7 +285,7 @@
                                         <td>
                                             <input type="hidden" name="employee_id" value="<?php echo isset($employee_id) ? $employee_id : '' ?>">
                                             <?php if ($_SESSION['login_type'] != 0) { ?>
-                                                <input class="form-control form-control-sm" style="width: 65px; height: 55px;" name="scores" type="number" value="<?php echo $ratingValue; ?>" id="scores_<?php echo $i ?>">
+                                                <input class="form-control form-control-sm" style="width: 65px; height: 55px;" name="target_scores" type="number" value="<?php echo $ratingValue; ?>" id="scores_<?php echo $i ?>">
                                             <?php } else { ?>
                                                 <input class="form-control form-control-sm" style="width: 65px; height: 55px;" name="scores" type="number" readonly value="<?php echo $ratingValue; ?>" id="scores_<?php echo $i ?>">
                                             <?php } ?>
@@ -309,39 +312,7 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function() {
-            $('#list').dataTable()
-            // Calculate overall rating
-            function calculateOverallRating() {
-                var targetCount = <?php echo $qry->num_rows; ?>; // Number of targets
-                var totalRating = 0;
 
-                // Loop through each target rating input field and sum the ratings
-                for (var i = 1; i <= targetCount; i++) {
-                    var rating = parseInt(document.getElementById("score_" + i).value);
-                    totalRating += rating;
-                }
-
-                // Calculate the overall rating by dividing the total rating by the number of targets
-                var overallRating = totalRating / targetCount;
-
-                // Set the value of the overall rating input field
-                document.getElementById("overall_score").value = overallRating;
-            }
-
-            // Call the calculateOverallRating function initially and whenever a target rating is changed
-            document.addEventListener("DOMContentLoaded", function() {
-                calculateOverallRating();
-
-                // Add an event listener to each target rating input field
-                var targetRatingInputs = document.querySelectorAll('[id^="scores_"]');
-                targetRatingInputs.forEach(function(input) {
-                    input.addEventListener("input", calculateOverallRating);
-                });
-            });
-        });
-    </script>
     <!-- State 4 -->
     <div class="card">
         <div class="card-header" id="heading4">
@@ -359,7 +330,7 @@
                     <!-- Dropdown for selecting login type -->
 
                     <div class="form-group">
-                        <label>Select Current User Type:</label>
+                        <label>Current User Type:</label>
                         <select class="form-control" id="login_type" name="login_type">
                             <option value="0" <?php echo ($_SESSION['login_type'] == 0) ? 'selected' : ''; ?>>Appraisee</option>
                             <option value="1" <?php echo ($_SESSION['login_type'] == 1) ? 'selected' : ''; ?>>Supervisor</option>
@@ -463,61 +434,321 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            // Handle login type selection change event
-            document.getElementById('login_type').addEventListener('change', function() {
-                var loginType = this.value;
-
-                // Disable inappropriate comment section based on login type
-                if (loginType == 0) {
-                    document.getElementById('supervisor_comments').classList.add('d-none');
-                    document.querySelectorAll('#supervisor_comments textarea, #supervisor_comments input').forEach(function(element) {
-                        element.display = false;
-                    });
-
-                    document.getElementById('appraisee_comments').classList.remove('d-none');
-                    document.querySelectorAll('#appraisee_comments textarea, #appraisee_comments input').forEach(function(element) {
-                        element.display = true;
-                    });
-                } else if (loginType == 1) {
-                    document.getElementById('appraisee_comments').classList.add('d-none');
-                    document.querySelectorAll('#appraisee_comments textarea, #appraisee_comments input').forEach(function(element) {
-                        element.display = false;
-                    });
-
-                    document.getElementById('supervisor_comments').classList.remove('d-none');
-                    document.querySelectorAll('#supervisor_comments textarea, #supervisor_comments input').forEach(function(element) {
-                        element.display = true;
-                    });
-                }
-            });
-        });
-    </script>
     <!-- State 5 -->
     <div class="card">
         <div class="card-header" id="heading5">
             <h5 class="mb-0">
                 <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
-                    <h5>PART 4: PERFORMANCE COMPETENCIES</h5>
+                    <h5>PART 4 (a): PERFORMANCE COMPETENCIES</h5>
                 </button>
             </h5>
         </div>
 
         <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#accordion">
             <div class="card-body">
-                <h6><i>(to be completed by Supervisor using rating key* below)</i></h6>
                 <!-- State 5 Form -->
-                <form action="save_state5.php" method="POST">
-                    <!-- Form fields for State 5 -->
+                <form action="save_competence.php" method="POST">
+                    <input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="" class="control-label">Employee</label>
+                                <select name="employee_id" id="employee_id" class="form-control form-control-sm select2">
+                                    <option value=""></option>
+                                    <?php
+                                    $employees = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM employee_list where supervisor_id = {$_SESSION['login_id']} order by concat(lastname,', ',firstname,' ',middlename) asc");
+                                    while ($row = $employees->fetch_assoc()) :
+                                    ?>
+                                        <option value="<?php echo $row['id'] ?>" <?php echo isset($employee_id) && $employee_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row " id="ratings-field">
+                            <div class="col-md-12">
+                                <label for="" class="control-label">COMPETENCIES / ATTRIBUTES</label>
+                            </div>
+                            <hr>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="" class="control-label">Management/Supervisory Skills:</label>
+                                    <select name="mgt_skills" id="management-skills" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($mgt_skills) && $mgt_skills == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="control-label">Job knowledge:</label>
+                                    <select name="j_knowledge" id="job-knowledge" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($j_knowledge) && $j_knowledge == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                            </div>
 
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="" class="control-label">Quality of Work:</label>
+                                    <select name="qow" id="quality-of-work" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($qow) && $qow == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="control-label">Promptness in completing assignments:</label>
+                                    <select name="promptness" id="promptness" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($promptness) && $promptness == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="" class="control-label">Dependability:</label>
+                                    <select name="dependability" id="dependability" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($dependability) && $dependability == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="control-label">Accountability:</label>
+                                    <select name="accountability" id="accountability" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($accountability) && $accountability == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="" class="control-label">Initiative and Creativity:</label>
+                                    <select name="creativity" id="creativity" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($creativity) && $creativity == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="" class="control-label">Communication skills:</label>
+                                    <select name="com_skills" id="com_skills" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($com_skills) && $com_skills == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label for="" class="control-label">Tact and Courtesy:</label>
+                                    <select name="courtesy" id="courtesy" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($courtesy) && $courtesy == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="control-label">Attitude:</label>
+                                    <select name="attitude" id="attitude" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($attitude) && $attitude == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="" class="control-label">Adaptability:</label>
+                                    <select name="adaptability" id="adaptability" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($adaptability) && $adaptability == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="control-label">Team work:</label>
+                                    <select name="team_work" id="team-work" class="form-control form-control-sm rating" required>
+                                        <?php
+                                        for ($i = 4; $i >= 0; $i--) :
+                                        ?>
+                                            <option <?php echo isset($team_work) && $team_work == $i ? "selected" : '' ?>><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="" class="control-label">Overall Rating on Competencies/Attributes</label>
+                                    <input type="text" class="form-control" id="overall-rating" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <hr>
                     <div class="col-lg-12 text-right justify-content-center d-flex">
-                        <button type="submit" class="btn btn-primary mr-2">Save</button>
+                        <button class="btn btn-primary mr-2">Save</button>
+                        <!--<button class="btn btn-secondary" type="button" onclick="location.href = 'index.php?page= '">Cancel</button>-->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- State 6 -->
+    <div class="card">
+        <div class="card-header" id="heading5">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+                    <h5>PART 4 (b): FOLLOW-UP ACTION</h5>
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#accordion">
+            <div class="card-body">
+                <!-- State 6 Form -->
+                <form action="save_state6.php" method="POST">
+                    <!-- Form fields for State 6 -->
+                    <div class="form-group">
+                        <label for="follow-up-action">What type of follow-up action do you recommend for the appraisee?</label>
+                        <textarea class="form-control" id="follow-up-action" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="date">Date:</label>
+                            <input type="text" class="form-control" id="date">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="signature">Signature:</label>
+                            <input type="text" class="form-control" id="signature">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="name">Name:</label>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="job-title">Job Title:</label>
+                            <input type="text" class="form-control" id="job-title">
+                        </div>
+                    </div>
+
+                    <p>*Rating key: Outstanding=4 Good = 3 Fair = 2 Poor = 1 Non Applicable = x</p>
+                    <p>*Overall rating on Competencies/Attributes is total rating divided by the number of Competencies / Attributes rated.</p>
+                    <hr>
+                    <div class="col-lg-12 text-right justify-content-center d-flex">
+                        <button class="btn btn-primary mr-2">Save</button>
+                        <!--<button class="btn btn-secondary" type="button" onclick="location.href = 'index.php?page= '">Cancel</button>-->
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+<script>
+    // Function to calculate the overall rating
+    function calculateOverallRating() {
+        var ratings = document.getElementsByClassName('rating');
+        var sum = 0;
+        for (var i = 0; i < ratings.length; i++) {
+            sum += parseInt(ratings[i].value);
+        }
+        var overallRating = sum / ratings.length;
+        document.getElementById('overall-rating').value = overallRating.toFixed(2);
+    }
+
+    // Add event listeners to the rating fields
+    var ratingFields = document.getElementsByClassName('rating');
+    for (var i = 0; i < ratingFields.length; i++) {
+        ratingFields[i].addEventListener('change', calculateOverallRating);
+    }
+    // Handle login type selection change event
+    document.getElementById('login_type').addEventListener('change', function() {
+        var loginType = this.value;
+
+        // Disable inappropriate comment section based on login type
+        if (loginType == 0) {
+            document.getElementById('supervisor_comments').classList.add('d-none');
+            document.querySelectorAll('#supervisor_comments textarea, #supervisor_comments input').forEach(function(element) {
+                element.display = false;
+            });
+
+            document.getElementById('appraisee_comments').classList.remove('d-none');
+            document.querySelectorAll('#appraisee_comments textarea, #appraisee_comments input').forEach(function(element) {
+                element.display = true;
+            });
+        } else if (loginType == 1) {
+            document.getElementById('appraisee_comments').classList.add('d-none');
+            document.querySelectorAll('#appraisee_comments textarea, #appraisee_comments input').forEach(function(element) {
+                element.display = false;
+            });
+
+            document.getElementById('supervisor_comments').classList.remove('d-none');
+            document.querySelectorAll('#supervisor_comments textarea, #supervisor_comments input').forEach(function(element) {
+                element.display = true;
+            });
+        }
+    });
+
+    $('#list').dataTable()
+    // Calculate overall rating
+    function calculateOverallRating() {
+        var targetCount = <?php echo $qry->num_rows; ?>; // Number of targets
+        var totalRating = 0;
+
+        // Loop through each target rating input field and sum the ratings
+        for (var i = 1; i <= targetCount; i++) {
+            var rating = parseInt(document.getElementById("score_" + i).value);
+            totalRating += rating;
+        }
+
+        // Calculate the overall rating by dividing the total rating by the number of targets
+        var overallRating = totalRating / targetCount;
+
+        // Set the value of the overall rating input field
+        document.getElementById("overall_score").value = overallRating;
+    }
+
+    // Call the calculateOverallRating function initially and whenever a target rating is changed
+    document.addEventListener("DOMContentLoaded", function() {
+        calculateOverallRating();
+
+        // Add an event listener to each target rating input field
+        var targetRatingInputs = document.querySelectorAll('[id^="scores_"]');
+        targetRatingInputs.forEach(function(input) {
+            input.addEventListener("input", calculateOverallRating);
+        });
+    });
+</script>

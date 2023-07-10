@@ -15,7 +15,7 @@ if (isset($_GET['id'])) {
 	<div class="card card-widget widget-user shadow">
 		<div class="widget-user-header bg-dark">
 			<h3 class="widget-user-username"><?php echo ucwords($name) ?></h3>
-			<h6 class="widget-user-details">Date of Birth: <?php echo ucwords($DOB) ?>&nbsp;&nbsp;Gender: <?php echo ucwords($sex) ?></h6>
+			<h6 class="widget-user-details">Date of Birth: <?php echo date("m d,Y", strtotime($DOB)) ?>&nbsp;&nbsp;Gender: <?php echo ucwords($sex) ?></h6>
 			<h5 class="widget-user-desc"><?php echo $email ?></h5>
 		</div><br><br>
 		<div class="widget-user-image">

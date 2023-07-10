@@ -17,7 +17,7 @@ if (isset($_SESSION['login_id'])) {
 
     $j_title = $conn->query("SELECT * FROM job_description where job_id = $j_title_id ");
     $j_title = $j_title->num_rows > 0 ? $j_title->fetch_array()['j_title'] : 'Unknown Job Title';
-    $j_purpose = $conn->query("SELECT * FROM job_description where job_id = $j_purpose ");
+    $j_purpose = $conn->query("SELECT * FROM job_description where job_id = $j_title_id ");
     $j_purpose = $j_purpose->num_rows > 0 ? $j_purpose->fetch_array()['j_purpose'] : 'Unknown Job Purpose';
     $department = $conn->query("SELECT * FROM department_list where id = $department_id ");
     $department = $department->num_rows > 0 ? $department->fetch_array()['department'] : 'Unknown Department';
@@ -52,6 +52,7 @@ if (isset($_SESSION['login_id'])) {
                     <p><?php echo $j_purpose ?> </p>
                 </div>
             </div>
+            <hr>
             <div class="card-tools">
                 <a class="btn btn-block btn-sm btn-default btn-flat border-primary" href="./index.php?page=new_work_plan"><i class="fa fa-plus"></i> Add New Work Plan</a>
             </div>
@@ -77,10 +78,11 @@ if (isset($_SESSION['login_id'])) {
                     if ($_SESSION['login_type'] == 0)
                         $where = " where w.employee_id = '{$_SESSION['login_id']}' ";
                     elseif ($_SESSION['login_type'] == 1)
-                        $where = " where e.supervisor_id = {$_SESSION['login_id']} ";
+                        $where = " where w.supervisor_id = {$_SESSION['login_id']} ";
 
                     //$qry = $conn->query("SELECT * FROM work_plan WHERE employee_id = '{$_SESSION[' login_id']}' OR supervisor_id = '{$_SESSION[' login_id']}'");
                     $qry = $conn->query("SELECT w.*,concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM work_plan w inner join employee_list e on e.id = w.employee_id $where order by unix_timestamp(w.date_created) asc");
+                    $qry = $conn->query("SELECT w.*,concat(s.lastname,', ',s.firstname,' ',s.middlename) as name FROM work_plan w inner join supervisor_list s on s.id = w.supervisor_id $where order by unix_timestamp(w.date_created) asc");
                     while ($row = $qry->fetch_assoc()) :
                         $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
                         unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);

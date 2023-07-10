@@ -33,7 +33,6 @@
                             $qry = $conn->query("SELECT w.*, concat(e.lastname, ', ', e.firstname, ' ', e.middlename) as name FROM work_plan w INNER JOIN employee_list e ON e.id = w.employee_id WHERE w.employee_id = " . $employee_id);
                             $rows = $qry->fetch_all(MYSQLI_ASSOC);
 
-                            // Rest of your code to display the fetched data
                             $i = 1;
                             foreach ($rows as $row) {
                                 $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
@@ -47,9 +46,9 @@
 
                                 // Fetch the recent rating for the target
                                 $targetId = $row['id']; // Assuming the target ID column name is 'id' in the work_plan table
-                                $recentRatingQuery = $conn->query("SELECT scores FROM apas_rating WHERE target_id = $targetId ");
+                                $recentRatingQuery = $conn->query("SELECT target_score FROM work_plan WHERE employee_id = $targetId ");
                                 $recentRating = $recentRatingQuery->fetch_assoc();
-                                $ratingValue = isset($recentRating['scores']) ? $recentRating['scores'] : '';
+                                $target_score = isset($recentRating['target_score']) ? $recentRating['target_score'] : '';
                         ?>
                                 <tr>
                                     <td class="text-center"><?php echo $i++ ?></td>
@@ -62,9 +61,11 @@
                                     <td>
                                         <input type="hidden" name="employee_id" value="<?php echo isset($employee_id) ? $employee_id : '' ?>">
                                         <?php if ($_SESSION['login_type'] != 0) { ?>
-                                            <input class="form-control form-control-sm" style="width: 65px; height: 55px;" name="scores" type="number" value="<?php echo $ratingValue; ?>" id="scores_<?php echo $i ?>">
+                                            <input class="form-control form-control-sm target_score" style="width: 65px; height: 55px;" name="target_score[<?php echo $targetId ?>]" type="number" value="<?php echo isset($target_score) ? $target_score : '' ?>" id="target_score_<?php echo $i ?>">
+
                                         <?php } else { ?>
-                                            <input class="form-control form-control-sm" style="width: 65px; height: 55px;" name="scores" type="number" readonly value="<?php echo $ratingValue; ?>" id="scores_<?php echo $i ?>">
+                                            <input class="form-control form-control-sm target_score" style="width: 65px; height: 55px;" name="target_score[<?php echo $targetId ?>]" type="number" value="<?php echo isset($target_score) ? $target_score : '' ?>" id="target_score_<?php echo $i ?>">
+
                                         <?php } ?>
                                     </td>
                                 </tr>
@@ -89,36 +90,34 @@
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function() {
-        $('#list').dataTable()
+        $('#list').dataTable();
+
         // Calculate overall rating
         function calculateOverallRating() {
-            var targetCount = <?php echo $qry->num_rows; ?>; // Number of targets
+            var targetCount = $('.target_score').length; // Number of targets
             var totalRating = 0;
 
             // Loop through each target rating input field and sum the ratings
-            for (var i = 1; i <= targetCount; i++) {
-                var rating = parseInt(document.getElementById("scores_" + i).value);
+            $('.target_score').each(function() {
+                var rating = parseInt($(this).val());
                 totalRating += rating;
-            }
+            });
 
             // Calculate the overall rating by dividing the total rating by the number of targets
             var overallRating = totalRating / targetCount;
 
             // Set the value of the overall rating input field
-            document.getElementById("overall_score").value = overallRating;
+            $('#overall_score').val(overallRating);
         }
 
         // Call the calculateOverallRating function initially and whenever a target rating is changed
-        document.addEventListener("DOMContentLoaded", function() {
-            calculateOverallRating();
+        calculateOverallRating();
 
-            // Add an event listener to each target rating input field
-            var targetRatingInputs = document.querySelectorAll('[id^="scores_"]');
-            targetRatingInputs.forEach(function(input) {
-                input.addEventListener("input", calculateOverallRating);
-            });
+        $('.target_score').on('input', function() {
+            calculateOverallRating();
         });
     });
 </script>

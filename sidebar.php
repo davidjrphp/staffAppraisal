@@ -57,13 +57,29 @@
               </p>
             </a>
           </li>
-          <li class="nav-item dropdown">
-            <a href="./index.php?page=annual_performance_appraisal" class="nav-link nav-annual_performance_appraisal">
+
+          <li class="nav-item">
+            <a href="#" class="nav-link nav-edit_performance_appraisal">
               <i class="nav-icon fas fa-thumbs-up"></i>
               <p>
                 Performance Appraisal
+                <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="./index.php?page=annual_performance_appraisal" class="nav-link nav-annual_performance_appraisal">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Explore</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="./index.php?page=target_rating_results" class="nav-link nav-target_rating_results tree-item">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Total Rating</p>
+                </a>
+              </li>
+            </ul>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link nav-edit_employee">

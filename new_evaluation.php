@@ -13,6 +13,7 @@
 							<select name="employee_id" id="employee_id" class="form-control form-control-sm select2">
 								<option value=""></option>
 								<?php
+								include 'db_connect.php';
 								$employees = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM employee_list where supervisor_id = {$_SESSION['login_id']} order by concat(lastname,', ',firstname,' ',middlename) asc");
 								while ($row = $employees->fetch_assoc()) :
 								?>

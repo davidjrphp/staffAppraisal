@@ -37,8 +37,9 @@ if (isset($_SESSION['login_id']))
     <img src="assets/uploads/zambia.png" alt="System Logo" class="brand-image img-square elevation-3" style="opacity: .8;width: 5.5rem;height: 5.5rem;max-height: unset; ">
   </div>
   <h3><b>Welcome to<b></h3><br>
-  <h6 class=" page-title" style="text-align: center"><?php echo $_SESSION['system']['name'] ?> &nbsp; <i style="color: green">v1.0</i></h6>
-  <h6 class="short-form" style="text-align: center"><?php echo $_SESSION['system']['short_form'] ?></h6><br>
+  <h6 class=" page-title" style="text-align: center"><?php echo $_SESSION['system']['name'] ?></h6>
+  <h6 class="short-form" style="text-align: center"><?php echo $_SESSION['system']['short_form'] ?></h6>
+  <h6 class="version" style="text-align: center"><i style="color: green">v1.0.3</i></h6><br>
   <div class="login-box">
     <div class="login-logo">
       <a href="#" class="text-white"></a>

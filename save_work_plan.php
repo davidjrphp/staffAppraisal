@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Call the function to save the work plan
     if (saveWorkPlan($conn, $employee_id, $supervisor_id, $start_date, $end_date, $kra_name, $p_accountability, $targets, $activ_schedule)) {
-        echo "<script>alert('Successfully Saved!'); window.location='index.php?page=work_plan_list'</script>";
+        echo "<script>alert('Successfully Saved!'); window.location='index.php?page=individual_work_plan'</script>";
     } else {
         echo "<script>alert('Failed to save data')</script>";
     }
