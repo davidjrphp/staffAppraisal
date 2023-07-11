@@ -169,7 +169,7 @@
 
                         //$qry = $conn->query("SELECT * FROM work_plan WHERE employee_id = '{$_SESSION['login_id']}'");
                         $qry = $conn->query("SELECT w.*, concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM work_plan w INNER JOIN employee_list e ON e.id = w.employee_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
-                        $qry = $conn->query("SELECT w.*, concat(s.lastname,', ',s.firstname,' ',s.middlename) as name FROM work_plan w INNER JOIN supervisor_list s ON s.id = w.supervisor_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
+                        //$qry = $conn->query("SELECT w.*, concat(s.lastname,', ',s.firstname,' ',s.middlename) as name FROM work_plan w INNER JOIN supervisor_list s ON s.id = w.supervisor_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
                         while ($row = $qry->fetch_assoc()) {
                             $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
                             unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
@@ -257,7 +257,7 @@
 
                                 //$qry = $conn->query("SELECT * FROM work_plan WHERE employee_id = '{$_SESSION['login_id']}'");
                                 $qry = $conn->query("SELECT w.*, concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM work_plan w INNER JOIN employee_list e ON e.id = w.employee_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
-                                $qry = $conn->query("SELECT w.*, concat(s.lastname,', ',s.firstname,' ',s.middlename) as name FROM work_plan w INNER JOIN supervisor_list s ON s.id = w.supervisor_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
+                                //$qry = $conn->query("SELECT w.*, concat(s.lastname,', ',s.firstname,' ',s.middlename) as name FROM work_plan w INNER JOIN supervisor_list s ON s.id = w.supervisor_id $where ORDER BY UNIX_TIMESTAMP(w.date_created) ASC");
                                 while ($row = $qry->fetch_assoc()) {
                                     $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
                                     unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
@@ -636,7 +636,7 @@
         <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#accordion">
             <div class="card-body">
                 <!-- State 6 Form -->
-                <form action="save_state6.php" method="POST">
+                <form action="follow_up_action.php" method="POST">
                     <!-- Form fields for State 6 -->
                     <div class="form-group">
                         <label for="follow-up-action">What type of follow-up action do you recommend for the appraisee?</label>
@@ -646,22 +646,38 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="date">Date:</label>
-                            <input type="text" class="form-control" id="date">
+                            <input type="date" class="form-control" id="date" name="date" value="<?php echo isset($date) ? $date : date("Y-m-d"); ?>" placeholder="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="signature">Signature:</label>
-                            <input type="text" class="form-control" id="signature">
+                            <input type="text" class="form-control" id="sign" name="sign" value="<?php echo isset($sign) ? $sign : ''; ?>" placeholder="Enter signature">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="name">Name:</label>
-                            <input type="text" class="form-control" id="name">
+                            <label for="" class="control-label">Name</label>
+                            <select name="supervisor_id" id="supervisor_id" class="form-control form-control-sm select2">
+                                <option value=""></option>
+                                <?php
+                                $supervisors = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM supervisor_list order by concat(lastname,', ',firstname,' ',middlename) asc");
+                                while ($row = $supervisors->fetch_assoc()) :
+                                ?>
+                                    <option value="<?php echo $row['id'] ?>" <?php echo isset($supervisor_id) && $supervisor_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
+                                <?php endwhile; ?>
+                            </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="job-title">Job Title:</label>
-                            <input type="text" class="form-control" id="job-title">
+                            <label for="" class="control-label">Job Title</label>
+                            <select name="j_title_id" id="j_title_id" class="form-control form-control-sm select2">
+                                <option value=""></option>
+                                <?php
+                                $j_titles = $conn->query("SELECT * FROM job_description order by j_title asc");
+                                while ($row = $j_titles->fetch_assoc()) :
+                                ?>
+                                    <option value="<?php echo $row['job_id'] ?>" <?php echo isset($j_title_id) && $j_title_id == $row['job_id'] ? 'selected' : '' ?>><?php echo $row['j_title'] ?></option>
+                                <?php endwhile; ?>
+                            </select>
                         </div>
                     </div>
 

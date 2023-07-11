@@ -11,7 +11,6 @@
                     <tr>
                         <th class="text-center">#</th>
                         <th>Name</th>
-                        <!--<th>Superviosr Name</th>-->
                         <th>Overall Score</th>
                         <th>Action</th>
                     </tr>

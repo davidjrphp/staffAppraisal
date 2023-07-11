@@ -79,6 +79,12 @@
                   <p>Total Rating</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="./index.php?page=performance_competence" class="nav-link nav-performance_competence tree-item">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Performance Competence</p>
+                </a>
+              </li>
             </ul>
           </li>
           <li class="nav-item">
