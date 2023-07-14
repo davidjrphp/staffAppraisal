@@ -82,7 +82,7 @@ if (isset($_SESSION['login_id'])) {
 
                     //$qry = $conn->query("SELECT * FROM work_plan WHERE employee_id = '{$_SESSION[' login_id']}' OR supervisor_id = '{$_SESSION[' login_id']}'");
                     $qry = $conn->query("SELECT w.*,concat(e.lastname,', ',e.firstname,' ',e.middlename) as name FROM work_plan w inner join employee_list e on e.id = w.employee_id $where order by unix_timestamp(w.date_created) asc");
-                    $qry = $conn->query("SELECT w.*,concat(s.lastname,', ',s.firstname,' ',s.middlename) as name FROM work_plan w inner join supervisor_list s on s.id = w.supervisor_id $where order by unix_timestamp(w.date_created) asc");
+                    //$qry = $conn->query("SELECT w.*,concat(s.lastname,', ',s.firstname,' ',s.middlename) as name FROM work_plan w inner join supervisor_list s on s.id = w.supervisor_id $where order by unix_timestamp(w.date_created) asc");
                     while ($row = $qry->fetch_assoc()) :
                         $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
                         unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);

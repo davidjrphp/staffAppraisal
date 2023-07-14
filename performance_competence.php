@@ -39,7 +39,7 @@
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="./index.php?page=edit_performance&id=<?php echo $row['id'] ?>">Edit</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item delete_evaluation" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">Delete</a>
+                                    <a class="dropdown-item action_comments" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">View Comment</a>
                                 </div>
                             </td>
                         </tr>
@@ -55,8 +55,8 @@
         $('.view_performance').click(function() {
             uni_modal("Competencies/Attributes", "view_performance.php?id=" + $(this).attr('data-id'), 'mid-large')
         })
-        $('.delete_evaluation').click(function() {
-            _conf("Are you sure to delete this evaluation?", "delete_evaluation", [$(this).attr('data-id')])
+        $('.action_comments').click(function() {
+            uni_modal("Follow Up Action", "action_comments.php?id=" + $(this).attr('data-id'), 'mid-large')
         })
     })
 

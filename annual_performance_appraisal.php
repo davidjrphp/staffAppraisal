@@ -285,9 +285,11 @@
                                         <td>
                                             <input type="hidden" name="employee_id" value="<?php echo isset($employee_id) ? $employee_id : '' ?>">
                                             <?php if ($_SESSION['login_type'] != 0) { ?>
-                                                <input class="form-control form-control-sm" style="width: 65px; height: 55px;" name="target_scores" type="number" value="<?php echo $ratingValue; ?>" id="scores_<?php echo $i ?>">
+                                                <input class="form-control form-control-sm target_score" style="width: 65px; height: 55px;" name="target_score[<?php echo $targetId ?>]" type="number" value="<?php echo isset($target_score) ? $target_score : '' ?>" id="target_score_<?php echo $i ?>">
+
                                             <?php } else { ?>
-                                                <input class="form-control form-control-sm" style="width: 65px; height: 55px;" name="scores" type="number" readonly value="<?php echo $ratingValue; ?>" id="scores_<?php echo $i ?>">
+                                                <input class="form-control form-control-sm target_score" style="width: 65px; height: 55px;" name="target_score[<?php echo $targetId ?>]" type="number" value="<?php echo isset($target_score) ? $target_score : '' ?>" id="target_score_<?php echo $i ?>">
+
                                             <?php } ?>
                                         </td>
                                     </tr>
@@ -312,6 +314,36 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#list').dataTable();
+
+            // Calculate overall rating
+            function calculateOverallRating() {
+                var targetCount = $('.target_score').length; // Number of targets
+                var totalRating = 0;
+
+                // Loop through each target rating input field and sum the ratings
+                $('.target_score').each(function() {
+                    var rating = parseInt($(this).val());
+                    totalRating += rating;
+                });
+
+                // Calculate the overall rating by dividing the total rating by the number of targets
+                var overallRating = totalRating / targetCount;
+
+                // Set the value of the overall rating input field
+                $('#overall_score').val(overallRating);
+            }
+
+            // Call the calculateOverallRating function initially and whenever a target rating is changed
+            calculateOverallRating();
+
+            $('.target_score').on('input', function() {
+                calculateOverallRating();
+            });
+        });
+    </script>
 
     <!-- State 4 -->
     <div class="card">
@@ -622,6 +654,51 @@
             </div>
         </div>
     </div>
+    <script>
+        // Function to calculate the overall rating
+        function calculateOverallRating() {
+            var ratings = document.getElementsByClassName('rating');
+            var sum = 0;
+            for (var i = 0; i < ratings.length; i++) {
+                sum += parseInt(ratings[i].value);
+            }
+            var overallRating = sum / ratings.length;
+            document.getElementById('overall-rating').value = overallRating.toFixed(2);
+        }
+
+        // Add event listeners to the rating fields
+        var ratingFields = document.getElementsByClassName('rating');
+        for (var i = 0; i < ratingFields.length; i++) {
+            ratingFields[i].addEventListener('change', calculateOverallRating);
+        }
+        // Handle login type selection change event
+        document.getElementById('login_type').addEventListener('change', function() {
+            var loginType = this.value;
+
+            // Disable inappropriate comment section based on login type
+            if (loginType == 0) {
+                document.getElementById('supervisor_comments').classList.add('d-none');
+                document.querySelectorAll('#supervisor_comments textarea, #supervisor_comments input').forEach(function(element) {
+                    element.display = false;
+                });
+
+                document.getElementById('appraisee_comments').classList.remove('d-none');
+                document.querySelectorAll('#appraisee_comments textarea, #appraisee_comments input').forEach(function(element) {
+                    element.display = true;
+                });
+            } else if (loginType == 1) {
+                document.getElementById('appraisee_comments').classList.add('d-none');
+                document.querySelectorAll('#appraisee_comments textarea, #appraisee_comments input').forEach(function(element) {
+                    element.display = false;
+                });
+
+                document.getElementById('supervisor_comments').classList.remove('d-none');
+                document.querySelectorAll('#supervisor_comments textarea, #supervisor_comments input').forEach(function(element) {
+                    element.display = true;
+                });
+            }
+        });
+    </script>
 
     <!-- State 6 -->
     <div class="card">
@@ -639,8 +716,20 @@
                 <form action="follow_up_action.php" method="POST">
                     <!-- Form fields for State 6 -->
                     <div class="form-group">
+                        <label for="" class="control-label">Choose Employee</label>
+                        <select name="employee_id" id="employee_id" class="form-control form-control-sm select2" required="">
+                            <option value=""></option>
+                            <?php
+                            $employees = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM employee_list where supervisor_id = {$_SESSION['login_id']} order by concat(lastname,', ',firstname,' ',middlename) asc");
+                            while ($row = $employees->fetch_assoc()) :
+                            ?>
+                                <option value="<?php echo $row['id'] ?>" <?php echo isset($employee_id) && $employee_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="follow-up-action">What type of follow-up action do you recommend for the appraisee?</label>
-                        <textarea class="form-control" id="follow-up-action" rows="3"></textarea>
+                        <textarea class="form-control" name="action_comment" id="action-comment" rows="3" required><?php echo isset($action_comment) ? $action_comment : ''; ?></textarea>
                     </div>
 
                     <div class="form-row">
@@ -650,26 +739,26 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="signature">Signature:</label>
-                            <input type="text" class="form-control" id="sign" name="sign" value="<?php echo isset($sign) ? $sign : ''; ?>" placeholder="Enter signature">
+                            <input type="text" class="form-control" id="sign" name="sign" required value="<?php echo isset($sign) ? $sign : ''; ?>" placeholder="Enter signature">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="" class="control-label">Name</label>
-                            <select name="supervisor_id" id="supervisor_id" class="form-control form-control-sm select2">
+                            <select name="supervisor_id" id="supervisor_id" class="form-control form-control-sm select2" required="">
                                 <option value=""></option>
                                 <?php
                                 $supervisors = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM supervisor_list order by concat(lastname,', ',firstname,' ',middlename) asc");
                                 while ($row = $supervisors->fetch_assoc()) :
                                 ?>
-                                    <option value="<?php echo $row['id'] ?>" <?php echo isset($supervisor_id) && $supervisor_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
+                                    <option required value="<?php echo $row['id'] ?>" <?php echo isset($supervisor_id) && $supervisor_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
                                 <?php endwhile; ?>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="" class="control-label">Job Title</label>
-                            <select name="j_title_id" id="j_title_id" class="form-control form-control-sm select2">
+                            <select name="j_title_id" id="j_title_id" class="form-control form-control-sm select2" required="">
                                 <option value=""></option>
                                 <?php
                                 $j_titles = $conn->query("SELECT * FROM job_description order by j_title asc");
@@ -694,50 +783,6 @@
     </div>
 </div>
 <script>
-    // Function to calculate the overall rating
-    function calculateOverallRating() {
-        var ratings = document.getElementsByClassName('rating');
-        var sum = 0;
-        for (var i = 0; i < ratings.length; i++) {
-            sum += parseInt(ratings[i].value);
-        }
-        var overallRating = sum / ratings.length;
-        document.getElementById('overall-rating').value = overallRating.toFixed(2);
-    }
-
-    // Add event listeners to the rating fields
-    var ratingFields = document.getElementsByClassName('rating');
-    for (var i = 0; i < ratingFields.length; i++) {
-        ratingFields[i].addEventListener('change', calculateOverallRating);
-    }
-    // Handle login type selection change event
-    document.getElementById('login_type').addEventListener('change', function() {
-        var loginType = this.value;
-
-        // Disable inappropriate comment section based on login type
-        if (loginType == 0) {
-            document.getElementById('supervisor_comments').classList.add('d-none');
-            document.querySelectorAll('#supervisor_comments textarea, #supervisor_comments input').forEach(function(element) {
-                element.display = false;
-            });
-
-            document.getElementById('appraisee_comments').classList.remove('d-none');
-            document.querySelectorAll('#appraisee_comments textarea, #appraisee_comments input').forEach(function(element) {
-                element.display = true;
-            });
-        } else if (loginType == 1) {
-            document.getElementById('appraisee_comments').classList.add('d-none');
-            document.querySelectorAll('#appraisee_comments textarea, #appraisee_comments input').forEach(function(element) {
-                element.display = false;
-            });
-
-            document.getElementById('supervisor_comments').classList.remove('d-none');
-            document.querySelectorAll('#supervisor_comments textarea, #supervisor_comments input').forEach(function(element) {
-                element.display = true;
-            });
-        }
-    });
-
     $('#list').dataTable()
     // Calculate overall rating
     function calculateOverallRating() {

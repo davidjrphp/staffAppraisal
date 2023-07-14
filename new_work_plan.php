@@ -7,7 +7,7 @@
                     <div class="col-md-6 border-right">
                         <?php if ($_SESSION['login_type'] == 0) : ?>
                             <div class="form-group">
-                                <label for="">Enter You Name</label>
+                                <label for="">Select Your Name</label>
                                 <select name="employee_id" id="employee_id" class="form-control form-control-sm" required="">
                                     <option value=""></option>
                                     <?php
